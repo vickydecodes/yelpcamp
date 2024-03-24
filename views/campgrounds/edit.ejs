@@ -1,0 +1,79 @@
+<% layout('layouts/boilerplate') -%>
+    <div class="row">
+        <h1 class="text-center">Edit Campground</h1>
+        <div class="col-6 offset-3">
+            <form action="/campgrounds/<%=campground.id %>?_method=PUT" method="post" class="mb-3  formvalid" novalidate>
+                <div>
+                    <label class="form-label" for="title">Title: </label>
+                    <input class="form-control" value="<%= campground.title %>" required autocomplete="off" type="text"
+                        id="title" name="campground[title]">
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                    <div class="invalid-feedback">
+                        Please give a title!
+                    </div>
+                </div>
+                <br>
+                <div>
+                    <label class="form-label" for="location">Location: </label>
+                    <input class="form-control" value="<%= campground.location %>" required autocomplete="off"
+                        type="text" id="location" name="campground[location]" required>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                    <div class="invalid-feedback">
+                        Please give a location!
+                    </div>
+                </div>
+                <br>
+                <div>
+                    <label class="form-label" for="image">Image Url:</label>
+                    <input class="form-control" value="<%= campground.image %>" required autocomplete="off" type="text"
+                        id="image" name="campground[image]">
+                    <br>
+                    <img src="<%= campground.image %>" alt="" class="img-fluid" width="500" height="500">
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                    <div class="invalid-feedback">
+                        Please give a image!
+                    </div>
+                </div>
+                <br>
+                <div class="input-group mb-3">
+                    <span class="input-group-text">$</span>
+                    <input type="text" name="campground[price]" autocomplete="off" required
+                        value="<%= campground.price %>" class="form-control" placeholder='0.00'>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                    <div class="invalid-feedback">
+                        Please give a price!
+                    </div>
+                </div>
+                <br>
+                <div>
+                    <label class="form-label" for="des">Description:</label>
+                    <textarea name="campground[description]" value="" autocomplete="off" required id="des" cols="20"
+                        rows="3" class="form-control"><%= campground.description %></textarea>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                    <div class="invalid-feedback">
+                        Not important, but a few lines will look better!
+                    </div>
+                </div>
+                <br>
+                <button class="btn btn-info">Update Campground</button>
+                <br><br>
+                <a href="/campgrounds" class="">Back To campgrounds</a>
+            </form>
+
+        </div>
+    </div>
+
+
+
+    </div>
+    </div>

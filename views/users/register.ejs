@@ -1,0 +1,49 @@
+<% layout('layouts/boilerplate')%>
+
+    <h1>register form</h1>
+    <div class="row">
+        <div class="col-6 offset-3">
+            <form action="/register" method="post" class="mb-3 formvalid" novalidate>
+                <div class="form-floating">
+                    
+                    <input class="form-control" required autocomplete="off" type="text" id="location"
+                        name="user[username]" placeholder="jjj" required>
+                        <label for="location">Username </label>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                    <div class="invalid-feedback">
+                        Please give a usename!
+                    </div>
+                </div>
+                <br>
+                <div class="form-floating">
+                    
+                    <input class="form-control" required autocomplete="off" type="text" id="title" name="user[email]" placeholder="jjj">
+                    <label  for="email">Email </label>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                    <div class="invalid-feedback">
+                        Please give your email!
+                    </div>
+                </div>
+                <br>
+                <div class="form-floating">
+                    
+                    <input class="form-control" required autocomplete="off" type="password" id="location" placeholder="jjj"
+                        name="user[password]" required>
+                        <label  for="location">Password </label>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                    <div class="invalid-feedback">
+                        Please give a password!
+                    </div>
+                </div>
+                <br>
+                <button class="btn btn-success">Register</button>
+                
+            </form>
+        </div>
+    </div>

@@ -1,0 +1,38 @@
+<% layout('layouts/boilerplate')%>
+
+    <h1>Login form</h1>
+    <br>
+    <div class="row">
+        <div class="col-6 offset-3">
+            <form action="/login" method="POST" class="mb-3 formvalid" novalidate>
+                <div class="form-floating">
+                    
+                    <input class="form-control" required autocomplete="off" type="text" id="location"
+                        name="username" placeholder="jjj" required>
+                        <label for="location">Username </label>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                    <div class="invalid-feedback">
+                        Please give a usename!
+                    </div>
+                </div>
+                <br>
+                <div class="form-floating">
+                    
+                    <input class="form-control" required autocomplete="off" type="password" id="location" placeholder="jjj"
+                        name="password" required>
+                        <label  for="location">Password </label>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                    <div class="invalid-feedback">
+                        Please give a password!
+                    </div>
+                </div>
+                <br>
+                <button class="btn btn-success">Login</button>
+                
+            </form>
+        </div>
+    </div>
