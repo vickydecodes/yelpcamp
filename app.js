@@ -22,9 +22,7 @@ app.use(methodOverride('_method'));
 
 
 
-mongoose.connect('mongodb://127.0.0.1:27017/yelpcamp', {
-
-});
+mongoose.connect('mongodb://127.0.0.1:27017/yelpcamp');
 
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'CONNECTION FAILED!'));
@@ -44,7 +42,7 @@ app.use(express.static(path.join(__dirname, 'public')))
 const sessionConfig = {
   secret: 'thisshouldbeabettersecret!',
   resave: false,
-  saveUnitialized: true,
+  saveUninitialized: true,
   cookie: {
     httpOnly: true,
     expires: Date.now() + 1000 * 60 * 60 * 24 * 7,

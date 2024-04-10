@@ -1,7 +1,5 @@
 const User = require('../models/user');
 const catchAsync = require('../utils/catchAsync');
-const passport = require('passport');
-const  storeReturnTo  = require('../utils/storeInfo');
 
 module.exports.renderRegisterForm = (req, res) => {
     res.render('../views/users/register')
