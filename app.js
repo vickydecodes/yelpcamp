@@ -1,3 +1,11 @@
+if(process.env.NODE_ENV !== 'production'){
+  require('dotenv').config()
+}
+
+console.log(process.env.CLOUDINARY_CLOUD_NAME);
+console.log(process.env.CLOUDINARY_KEY);
+console.log(process.env.CLOUDINARY_SECRET);
+
 const express = require('express');
 const mongoose = require('mongoose')
 const path = require('path');
@@ -9,7 +17,6 @@ const flash = require('connect-flash');
 const passport = require('passport');
 const LocalStrategy = require('passport-local')
 const User = require('./models/user.js');
-
 const campgroundRoutes = require('./routes/campgrounds.js')
 const reviewRoutes = require('./routes/reviews.js');
 const userRoutes = require('./routes/users.js');
@@ -29,11 +36,6 @@ db.on('error', console.error.bind(console, 'CONNECTION FAILED!'));
 db.once('open', () => {
   console.log('DATABASE CONNECTED');
 })
-
-// const db = mongoose.connect;
-// db.then{
-// console.log()
-// }
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'))
@@ -70,42 +72,8 @@ app.use((req, res, next) => {
 })
 
 
-app.get('/fakeUser', async (req, res) => {
-  const { email, username } = req.body;
-  const user = new User({ email: 'darklegendvs@gmail.com', username: 'vickyy' })
-  const newUser = await User.register(user, 'harisha');
-  res.send(newUser)
-
-})
-
-
-
-
-app.get('/', (req, res) => {
-  res.send('HELLO, FROM YELPCAMP!!')
-});
-
-// app.get('/mkcampground', async (req, res) =>{
-//   const camp = new Campground({title: 'keelkatalai', description: 'metro'});
-//   await camp.save();
-//   res.send(camp);
-// });
-
-app.get('/home', (req, res) => {
-  res.render('home')
-})
-
-//users
-
 app.use('/', userRoutes)
-
-
-//campgrounds
-
 app.use('/campgrounds', campgroundRoutes)
-
-//reviews
-
 app.use('/campgrounds/:id/reviews', reviewRoutes)
 
 

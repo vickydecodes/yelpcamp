@@ -2,7 +2,7 @@
     <div class="row">
         <h1 class="text-center">New Campground</h1>
         <div class="col-6 offset-3">
-            <form action="/campgrounds" method="post" class="formvalid" novalidate>
+            <form action="/campgrounds" method="post" class="formvalid" novalidate enctype="multipart/form-data">
                 <div>
                     <label class="form-label" for="title">Title: </label>
                     <input class="form-control" autocomplete="off" type="text" id="title" name="campground[title]"
@@ -31,8 +31,8 @@
                 <br>
                 <div>
                     <label class="form-label" for="image">Image Url:</label>
-                    <input class="form-control" required autocomplete="off" type="text" id="image"
-                        name="campground[image]" required>
+                    <input class="form-control" multiple required autocomplete="off" type="file" id="image"
+                        name="image" required>
                         <div class="valid-feedback">
                             Looks good!
                         </div>
