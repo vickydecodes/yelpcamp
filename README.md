@@ -1,4 +1,6 @@
 # Yelpcamp
+This is my first full stack project. This project is a camping based project which users can upload their preffered camps. Then the other users can view and review it.
+
 ## Table of contents
 * [General Info](#general-info)
 * [Technologies](#technologies)
