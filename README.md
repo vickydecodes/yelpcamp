@@ -1,7 +1,7 @@
 # Yelpcamp
 ## Table of contents
 * [General Info](#general-info)
-* Technologies
+* [Technologies](#technologies)
 * [To visit this Website](#to-visit)
 
 ## General Info
