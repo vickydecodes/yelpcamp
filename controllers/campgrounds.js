@@ -10,8 +10,9 @@ module.exports.renderNewForm = (req, res) => {
     res.render('campgrounds/new');
 }
 
-module.exports.createNewCampground =  catchAsync(async (req, res, next) => {
+module.exports.createNewCampground = catchAsync(async (req, res, next) => {
     const campground = new Campground(req.body.campground);
+    campground.images = req.files.map(f => ({ url: f.path, filename: f.filename }))
     campground.author = req.user._id;
     await campground.save();
     req.flash('success', 'Sucessfully added a campground!')
@@ -31,7 +32,6 @@ module.exports.showCampground = catchAsync(async (req, res) => {
         return res.redirect('/campgrounds')
     }
     res.render('campgrounds/show', { campground });
-    console.log(campground)
 })
 
 module.exports.renderEditForm = catchAsync(async (req, res) => {
@@ -47,8 +47,14 @@ module.exports.renderEditForm = catchAsync(async (req, res) => {
 
 module.exports.editCampground = catchAsync(async (req, res) => {
     const { id } = req.params;
-    const campground = await Campground.findById(id);
-    const camp = await Campground.findByIdAndUpdate(id, { ...req.body.campground });
+    console.log(req.body.deleteImages)
+    const campground = await Campground.findByIdAndUpdate(id, { ...req.body.campground });
+    const imgs = req.files.map(f => ({ url: f.path, filename: f.filename }))
+    campground.images.push(...imgs);
+    if (req.body.deleteImages) {
+        await campground.updateOne({ $pull: { images: { filename: { $in: req.body.deleteImages } } } })
+    }
+    await campground.save();
     req.flash('success', 'Sucessfully updated the campground!')
     res.redirect(`/campgrounds/${campground.id}`)
 })

@@ -8,17 +8,14 @@ const upload = multer({  storage })
 
 router.route('/')
     .get(campgrounds.renderIndex)
-    // .post(isLoggedIn, validateCampground, campgrounds.createNewCampground);
-    .post(upload.array('image'), (req, res) =>{
-       console.log(req.body, req.files)
-       res.send('IT WORKED')
-    }) 
+    .post(isLoggedIn,upload.array('image'), validateCampground, campgrounds.createNewCampground);
+
 
 router.get('/new', isLoggedIn, campgrounds.renderNewForm)
 
 router.route("/:id")
     .get(isLoggedIn, campgrounds.showCampground)
-    .put(isLoggedIn, validateCampground, isAuthor, campgrounds.editCampground)
+    .put(isLoggedIn, isAuthor, upload.array('image'), validateCampground, campgrounds.editCampground)
     .delete(isLoggedIn, isAuthor, campgrounds.deleteCampground)
 
 router.get('/:id/edit', isLoggedIn, isAuthor, campgrounds.renderEditForm)
