@@ -1,12 +1,20 @@
 <% layout('layouts/boilerplate') -%>
-    <H1>All campgrounds</H1>
+    <style>
+        #map {
+            height: 500px;
+            width: auto;
+            border: 1px solid black
+        }
+    </style>
+    <div id="map"></div><br>
+    <h2>All campgrounds</h2>
     <br>
 
     <% for(let campground of campgrounds) { %>
         <div class="card mb-3">
             <div class="row">
                 <div class="col-md-4">
-                    
+
                     <img class="img-fluid" src="<%= campground.images[0].url %>" alt="">
                 </div>
                 <div class="col-md-8">
@@ -28,3 +36,38 @@
             </div>
         </div>
         <% } %>
+            <script>
+                maptilersdk.config.apiKey = 'VFBv4l3uLTmbnkv0Hqd4';
+
+                const map = new maptilersdk.Map({
+                    container: 'map', // container's id or the HTML element to render the map
+                    style: maptilersdk.MapStyle.DATAVIZ.LIGHT,
+                    center: [80.62662018, 12.2125578], // starting position [lng, lat]
+                    zoom: 14, // starting zoom
+                    hash: true,
+                });
+
+                const gc = new maptilersdkMaptilerGeocoder.GeocodingControl({
+                    apiKey: 'VFBv4l3uLTmbnkv0Hqd4',
+                    onSelect: async function (result) {
+                        if (result) {
+                            console.log("Place Name:", result.query[0]);
+                            console.log("Coordinates:", result.center);
+                            console.log(result);
+                        } else {
+                            console.error("No result found.");
+                        }
+                    }
+                });
+
+                map.addControl(gc, 'top-left');
+
+                const marker = new maptilersdk.Marker()
+                    .setLngLat([12.954847, 80.185268])
+                    .addTo(map);
+                
+
+
+
+
+            </script>

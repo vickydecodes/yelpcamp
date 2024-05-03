@@ -1,4 +1,11 @@
 <% layout('layouts/boilerplate') -%>
+    <style>
+        #map {
+            height: 500px;
+            width: auto;
+        }
+    </style>
+
     <div class="row">
         <h1 class="text-center">New Campground</h1>
         <div class="col-6 offset-3">
@@ -7,62 +14,66 @@
                     <label class="form-label" for="title">Title: </label>
                     <input class="form-control" autocomplete="off" type="text" id="title" name="campground[title]"
                         required>
-                        <div class="valid-feedback">
-                            Looks good!
-                        </div>
-                        <div class="invalid-feedback">
-                            Please give a title!
-                          </div>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                    <div class="invalid-feedback">
+                        Please give a title!
+                    </div>
                 </div>
-               
+
                 <br>
                 <div>
                     <label class="form-label" for="location">Location: </label>
-                    <input class="form-control" required autocomplete="off" type="text" id="location"
-                        name="campground[location]" required>
-                        <div class="valid-feedback">
-                            Looks good!
-                        </div>
-                        <div class="invalid-feedback">
-                            Please give a location!
-                          </div>
-                        
+                    <div class="input-group mb-3">
+                        <input class="form-control me-1" placeholder="place" required autocomplete="off" type="text"
+                            id="place" name="campground[place]" required>
+                        <input class="form-control" placeholder="district" required autocomplete="off" type="text"
+                            id="district" name="campground[district]" required>
+                    </div>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                    <div class="invalid-feedback">
+                        Please give a location!
+                    </div>
+                    <div id="map"></div>
                 </div>
                 <br>
                 <div>
                     <label class="form-label" for="image">Image Url:</label>
-                    <input class="form-control" multiple required autocomplete="off" type="file" id="image"
-                        name="image" required>
-                        <div class="valid-feedback">
-                            Looks good!
-                        </div>
-                        <div class="invalid-feedback">
-                            Please upload an image!
-                          </div>
+                    <input class="form-control" multiple required autocomplete="off" type="file" id="image" name="image"
+                        required>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                    <div class="invalid-feedback">
+                        Please upload an image!
+                    </div>
                 </div>
                 <br>
                 <div class="input-group mb-3" required>
                     <span class="input-group-text" required>$</span>
                     <input type="text" name="campground[price]" autocomplete="off" required class="form-control"
-                        placeholder='0.00' >
-                        <div class="valid-feedback">
-                            Looks good!
-                        </div>
-                        <div class="invalid-feedback">
-                            Please give a price!
-                          </div>
+                        placeholder='0.00'>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                    <div class="invalid-feedback">
+                        Please give a price!
+                    </div>
                 </div>
                 <br>
                 <div>
                     <label class="form-label" for="des">Description:</label>
                     <textarea name="campground[description]" autocomplete="off" id="des" cols="20" rows="3"
                         class="form-control" required></textarea>
-                        <div class="valid-feedback">
-                            Looks good!
-                        </div>
-                        <div class="invalid-feedback">
-                            Not important, but a few lines will look better!
-                          </div>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                    <div class="invalid-feedback">
+                        Not important, but a few lines will look better!
+                    </div>
                 </div>
                 <br>
                 <button class="btn btn-success">Add Campground</button>
@@ -77,5 +88,34 @@
 
     </div>
     </div>
+    <script>
+        maptilersdk.config.apiKey = 'VFBv4l3uLTmbnkv0Hqd4';
+        const map = new maptilersdk.Map({
+            container: 'map',
+            style: maptilersdk.MapStyle.STREETS,
+            center: [16.62662018, 49.2125578],
+            zoom: 14,
+            hash: true,
+        });
+        const place = document.querySelector('#place').value
+        const response = async (req, res) => {
+            const res1 = await fetch(`https://api.maptiler.com/geocoding/${place}.json?language=en&limit=`)
+            const geocoding = res1.json();
+            console.log(geocode)
+        }
+        const gc = new maptilersdkMaptilerGeocoder.GeocodingControl({
+            apiKey:'VFBv4l3uLTmbnkv0Hqd4',
+            onSelect: function(result) {
+                if (result) {
+                    console.log("Place Name:", result.query);
+                    console.log("Coordinates:", result.center);
+                    console.log('result')
+                } else {
+                    console.error("No result found.");
+                }
+            }
+        });
 
-   
+        map.addControl(gc, 'top-left');
+
+    </script>
