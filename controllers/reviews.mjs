@@ -1,9 +1,9 @@
-const Campground = require('../models/campground.js');
-const Review = require('../models/review.js');
-const catchAsync = require('../utils/catchAsync.js');
+import Campground from '../models/campground.mjs';
+import Review from '../models/review.mjs';
+import catchAsync from '../utils/catchAsync.mjs';
 
 
-module.exports.postReview = catchAsync(async (req, res) => {
+const postReview = catchAsync(async (req, res) => {
     const campground = await Campground.findById(req.params.id);
     const review = new Review(req.body.review);
     review.author = req.user._id;
@@ -14,12 +14,18 @@ module.exports.postReview = catchAsync(async (req, res) => {
     res.redirect(`/campgrounds/${campground.id}`)
 })
 
-module.exports.deleteReview = catchAsync(async (req, res) => {
+const deleteReview = catchAsync(async (req, res) => {
     const { id, reviewId } = req.params;
-    const campground = Review.findById(id)
     await Campground.findByIdAndUpdate(id, { $pull: { reviews: reviewId } })
     await Review.findByIdAndDelete(reviewId)
     req.flash('error', 'Sucessfully deleted the review!')
     res.redirect(`/campgrounds/${id}`)
 
 })
+
+const reviews = {
+    postReview, 
+    deleteReview
+}
+
+export default reviews

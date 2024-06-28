@@ -24,12 +24,32 @@
 
                 <br>
                 <div>
+                    <label class="form-label" for="location">Coordinates: </label>
+                    <div class="input-group mb-3">
+                        <input class="form-control" placeholder="lattitude" required autocomplete="off"
+                             id="lat" readonly>
+                             <input class="form-control" placeholder="lattitude" required autocomplete="off"
+                             id="lat"  name="location[lat]">
+                        <input class="form-control d-none" placeholder="longitude" required autocomplete="off" 
+                            id="lon" readonly>
+                            <input class="form-control d-none" placeholder="longitude" required autocomplete="off" 
+                            id="lon" name="location[lon]">
+                            
+                    </div>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                    <div class="invalid-feedback">
+                        Please give a location!
+                    </div>
+
+                </div>
+                <div>
                     <label class="form-label" for="location">Location: </label>
                     <div class="input-group mb-3">
-                        <input class="form-control me-1" placeholder="place" required autocomplete="off" type="text"
-                            id="place" name="campground[place]" required>
-                        <input class="form-control" placeholder="district" required autocomplete="off" type="text"
-                            id="district" name="campground[district]" required>
+                        <input class="form-control" placeholder="place" required autocomplete="off" type="text"
+                            id="place" name="location[place]" required>
+
                     </div>
                     <div class="valid-feedback">
                         Looks good!
@@ -39,6 +59,7 @@
                     </div>
                     <div id="map"></div>
                 </div>
+
                 <br>
                 <div>
                     <label class="form-label" for="image">Image Url:</label>
@@ -90,6 +111,12 @@
     </div>
     <script>
         maptilersdk.config.apiKey = 'VFBv4l3uLTmbnkv0Hqd4';
+
+
+        const place = document.querySelector('#place');
+        const lats = document.querySelectorAll('#lat');
+        const lons = document.querySelectorAll('#lon')
+
         const map = new maptilersdk.Map({
             container: 'map',
             style: maptilersdk.MapStyle.STREETS,
@@ -97,25 +124,57 @@
             zoom: 14,
             hash: true,
         });
-        const place = document.querySelector('#place').value
-        const response = async (req, res) => {
-            const res1 = await fetch(`https://api.maptiler.com/geocoding/${place}.json?language=en&limit=`)
-            const geocoding = res1.json();
-            console.log(geocode)
-        }
-        const gc = new maptilersdkMaptilerGeocoder.GeocodingControl({
-            apiKey:'VFBv4l3uLTmbnkv0Hqd4',
-            onSelect: function(result) {
-                if (result) {
-                    console.log("Place Name:", result.query);
-                    console.log("Coordinates:", result.center);
-                    console.log('result')
-                } else {
-                    console.error("No result found.");
-                }
-            }
+
+        const geocodingControl = new maptilersdkMaptilerGeocoder.GeocodingControl({});
+
+        const handleGeocodingResults = (results) => {
+            const coordinates = results[0].coordinates;
+            const formattedAddress = results[0].formattedAddress; // Optional
+
+            console.log("Coordinates:", coordinates);
+            console.log("Formatted Address:", formattedAddress); // Optional
+
+            // Use the retrieved coordinates and address data for further actions
+            // (e.g., center the map on the searched location, display markers)
+            map.setCenter(coordinates); // Example: Center the map on the searched location
+        };
+
+        // Function to handle geocoding errors
+        const handleGeocodingError = (error) => {
+            console.error("Geocoding error:", error);
+            // Handle errors gracefully (e.g., display an error message to the user)
+            alert("Geocoding failed! Please try again with a different search term.");
+        };
+
+        // Add the geocoding control to the map
+        map.addControl(geocodingControl, 'top-left');
+
+        // Event listener for geocoding results (corrected method)
+        geocodingControl.addEventListener('response', (data) => {
+            console.log(data)
+            let data2 = data.detail
+            const coordinates = data2.featureCollection.features[0].geometry.coordinates;
+            const formattedAddress = data2.featureCollection.features[0].place_name;
+            let LattitudeLongitude = data2.featureCollection.features[0].center// Optional
+
+
+            // Look for district information in the context array
+
+            console.log("Coordinates:", coordinates);
+            console.log("Formatted Address:", formattedAddress);
+
+            place.value = formattedAddress;
+
+            lats.forEach(lat => {
+                lat.value = LattitudeLongitude[0];
+            })
+            lons.forEach(lon => {
+                lon.value = LattitudeLongitude[1]
+            })
+
+            map.setCenter(coordinates);
+
         });
 
-        map.addControl(gc, 'top-left');
-
+        geocodingControl.addEventListener('error', handleGeocodingError);
     </script>

@@ -5,4 +5,4 @@ const storeReturnTo = (req, res, next) => {
     next();
 }
 
-module.exports = storeReturnTo
+export default storeReturnTo

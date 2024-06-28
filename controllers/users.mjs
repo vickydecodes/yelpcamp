@@ -1,11 +1,11 @@
-const User = require('../models/user');
-const catchAsync = require('../utils/catchAsync');
+import User from '../models/user.mjs';
+import catchAsync from '../utils/catchAsync.mjs';
 
-module.exports.renderRegisterForm = (req, res) => {
+const renderRegisterForm = (req, res) => {
     res.render('../views/users/register')
 }
 
-module.exports.registerUser = catchAsync(async (req, res) => {
+const registerUser = catchAsync(async (req, res) => {
     try {
         const { email, username, password } = (req.body.user);
         const user = new User({ email, username });
@@ -22,17 +22,17 @@ module.exports.registerUser = catchAsync(async (req, res) => {
     }
 })
 
-module.exports.renderLoginForm = (req, res) => {
+const renderLoginForm = (req, res) => {
     res.render('../views/users/login')
 }
 
-module.exports.loginUser = (req, res) => {
+const loginUser = (req, res) => {
     req.flash('success', 'Welcome back!');
     const redirectUrl = res.locals.returnTo || '/campgrounds'; // update this line to use res.locals.returnTo now
     res.redirect(redirectUrl);
 }
 
-module.exports.logoutUser = (req, res, next) => {
+const logoutUser = (req, res, next) => {
     req.logout(function (err) {
         if (err) {
             return next(err);
@@ -41,3 +41,14 @@ module.exports.logoutUser = (req, res, next) => {
         res.redirect('/campgrounds');
     });
 }
+
+
+const users = {
+    renderRegisterForm,
+    registerUser,
+    renderLoginForm,
+    loginUser,
+    logoutUser
+}
+
+export default users

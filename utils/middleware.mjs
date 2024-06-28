@@ -1,11 +1,11 @@
-const { reviewSchema, campgroundSchema } = require('../schema.js');
-const Campground = require('../models/campground.js');
-const Review = require('../models/review.js');
-const catchAsync = require('./catchAsync.js');
-const expressError = require('./expressError.js')
+import { reviewSchema, campgroundSchema } from'../schema.mjs';
+import Campground from'../models/campground.mjs';
+import Review from'../models/review.mjs';
+import catchAsync from'./catchAsync.mjs';
+import expressError from'./expressError.mjs'
 
 
-module.exports.isLoggedIn = (req, res, next) =>{
+export const isLoggedIn = (req, res, next) =>{
     if(!req.isAuthenticated()){
         req.session.returnTo = req.originalUrl;
         req.flash('error', 'You must be logged in first');
@@ -14,8 +14,7 @@ module.exports.isLoggedIn = (req, res, next) =>{
     next()
 }
 
-module.exports.validateCampground = (req, res, next) => {
-
+export const validateCampground = (req, res, next) => {
     const { error } = campgroundSchema.validate(req.body);
     if (error) {
         const msg = error.details.map(el => el.message).join(',');
@@ -27,7 +26,7 @@ module.exports.validateCampground = (req, res, next) => {
 
 
 
-module.exports.validateReview = (req, res, next) =>{
+export const validateReview = (req, res, next) =>{
     const { error } = reviewSchema.validate(req.body);
     if (error) {
       const msg = error.details.map(el => el.message).join(',');
@@ -37,7 +36,7 @@ module.exports.validateReview = (req, res, next) =>{
     }
   }
 
-module.exports.isAuthor = catchAsync(async (req, res, next) => {
+export const isAuthor = catchAsync(async (req, res, next) => {
     const { id } = req.params;
     const campground = await Campground.findById(id);
     if (!campground.author.equals(req.user._id)) {
@@ -47,7 +46,7 @@ module.exports.isAuthor = catchAsync(async (req, res, next) => {
     next();
 })
 
-module.exports.isReviewAuthor = catchAsync(async (req, res, next) => {
+export const isReviewAuthor = catchAsync(async (req, res, next) => {
     const { reviewId } = req.params;
     const review = await Review.findById(reviewId);
     if (!review.author.equals(req.user._id)) {

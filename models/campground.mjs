@@ -1,15 +1,16 @@
-const mongoose = require('mongoose');
-const Review = require('./review')
-const Schema = mongoose.Schema;
+import mongoose from 'mongoose';
+import Review from '../models/review.mjs'; // Assuming review.mjs is the correct file extension
+
+const { Schema } = mongoose;
 
 const imageSchema = new Schema({
     url: String,
     filename: String
-})
+});
 
 imageSchema.virtual('thumbnail').get(function () {
-    return this.url.replace('/upload', '/upload/w_200')
-})
+    return this.url.replace('/upload', '/upload/w_200');
+});
 
 const CampgroundSchema = new Schema({
     title: String,
@@ -18,7 +19,6 @@ const CampgroundSchema = new Schema({
     description: String,
     location: {
         place: String,
-        district: String,
         lat: Number,
         lon: Number,
     },
@@ -37,12 +37,13 @@ const CampgroundSchema = new Schema({
 CampgroundSchema.post('findOneAndDelete', async function (doc) {
     if (doc) {
         await Review.deleteMany({
-            id: {
+            _id: {
                 $in: doc.reviews
             }
-        })
+        });
     }
+});
 
-})
+const Campground = mongoose.model('Campground', CampgroundSchema);
 
-module.exports = mongoose.model('Campground', CampgroundSchema);
+export default Campground;

@@ -1,9 +1,9 @@
-const mongoose = require('mongoose');
-// const cities = require ('cities')
+import mongoose from 'mongoose';
+import Campground from '../models/campground.mjs';
+import cities from './cities.mjs';
+import { descriptors, places } from './seedhelpers.js'
+
 mongoose.connect('mongodb://127.0.0.1:27017/yelpcamp');
-const Campground = require('../models/campground.js');
-const cities = require('./cities.js');
-const { descriptors, places } = require('./seedhelpers.js')
 
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'CONNECTION FAILED!'));

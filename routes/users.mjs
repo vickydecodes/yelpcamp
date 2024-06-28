@@ -1,8 +1,10 @@
-const express = require('express');
+import express from 'express';
+import passport from 'passport'
+import storeReturnTo from '../utils/storeInfo.mjs';
+import users from '../controllers/users.mjs'
+
 const router = express.Router();
-const passport = require('passport');
-const storeReturnTo = require('../utils/storeInfo');
-const users = require("../controllers/users")
+
 
 router.route('/register')
     .get(users.renderRegisterForm)
@@ -14,4 +16,4 @@ router.route("/login")
 
 router.get('/logout', users.logoutUser)
 
-module.exports = router
+export default router
