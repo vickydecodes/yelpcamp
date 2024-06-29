@@ -1,29 +1,37 @@
 import catchAsync from '../utils/catchAsync.mjs';
 import Campground from '../models/campground.mjs';
-import {cloudinary} from '../cloudinary/main.mjs';
+import { cloudinary } from '../cloudinary/main.mjs';
+import { json } from 'express';
 
 
- const renderIndex = catchAsync(async (req, res) => {
+const renderIndex = catchAsync(async (req, res) => {
     const campgrounds = await Campground.find({});
-    const locations = campgrounds.map(campground => [campground.location.lat, campground.location.lon]);
-    res.render('./campgrounds/index', { campgrounds,locations })
+    res.render('./campgrounds/index', { campgrounds })
 })
 
- const renderNewForm = (req, res) => {
+const renderNewForm = (req, res) => {
     res.render('campgrounds/new');
 }
 
- const createNewCampground = catchAsync(async (req, res) => {
+const searchCampgrounds = catchAsync(async (req, res) => {
+    const { searchTerm } = req.query;
+    console.log(searchTerm)
+    const campgrounds = await Campground.find({ title: { $regex: searchTerm  } });
+    res.render('./campgrounds/index', { campgrounds })
+})
+
+const createNewCampground = catchAsync(async (req, res) => {
     const campground = new Campground(req.body.campground);
-    campground.location = req.body.location;
+    campground.geometry = JSON.parse(req.body.geometry);
     campground.images = req.files.map(f => ({ url: f.path, filename: f.filename }))
     campground.author = req.user._id;
     await campground.save();
     req.flash('success', 'Sucessfully added a campground!')
     res.redirect(`/campgrounds/${campground.id}`);
+    res.send(campground)
 })
 
- const showCampground = catchAsync(async (req, res) => {
+const showCampground = catchAsync(async (req, res) => {
     const campground = await Campground.findById(req.params.id).populate({
         path: 'reviews',
         populate: {
@@ -38,7 +46,7 @@ import {cloudinary} from '../cloudinary/main.mjs';
     res.render('campgrounds/show', { campground });
 })
 
- const renderEditForm = catchAsync(async (req, res) => {
+const renderEditForm = catchAsync(async (req, res) => {
     const { id } = req.params;
     const campground = await Campground.findById(id);
     if (!campground) {
@@ -49,7 +57,7 @@ import {cloudinary} from '../cloudinary/main.mjs';
 
 })
 
- const editCampground = catchAsync(async (req, res) => {
+const editCampground = catchAsync(async (req, res) => {
     const { id } = req.params;
     console.log(req.body.deleteImages)
     const campground = await Campground.findByIdAndUpdate(id, { ...req.body.campground });
@@ -66,11 +74,11 @@ import {cloudinary} from '../cloudinary/main.mjs';
     res.redirect(`/campgrounds/${campground.id}`)
 })
 
- const deleteCampground = async (req, res) => {
+const deleteCampground = async (req, res) => {
     const { id } = req.params;
     await Campground.findByIdAndDelete(id);
     req.flash('error', 'Sucessfully deleted the campground!')
-    res.redirect('/campgrounds')   
+    res.redirect('/campgrounds')
 }
 
 const campgrounds = {
@@ -80,7 +88,8 @@ const campgrounds = {
     showCampground,
     renderEditForm,
     editCampground,
-    deleteCampground
+    deleteCampground,
+    searchCampgrounds
 };
 
 export default campgrounds

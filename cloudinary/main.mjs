@@ -7,7 +7,7 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_SECRET
 });
 
-export const storage = new CloudinaryStorage({
+const storage = new CloudinaryStorage({
     cloudinary,
     params: {
         folder: 'Yelpcamp',
@@ -15,4 +15,4 @@ export const storage = new CloudinaryStorage({
     }
 })
 
-export { cloudinary } 
+export { cloudinary, storage } 

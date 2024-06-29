@@ -1,86 +1,205 @@
 <% layout('layouts/boilerplate') -%>
-    <style>
-    #map {
-  width: 800px;
-  height: 800px;
-  border-radius: 50%;
-  animation: rotate 30s linear infinite; /* Add this line */
-}
+  <style>
+    #cluster-map {
+      width: auto;
+      height: 500px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+  </style>
+  <% if(campgrounds.length> 0) {%>
+    <center>
 
-@keyframes rotate {
-  from {
-    transform: rotate3d(0, 1, 0, 0deg);
-  }
-  to {
-    transform: rotate3d(0, 1, 0, 360deg);
-  }
-}
-    </style>
-  <center>
-    <div id="map" class="shadow-lg"></div><br>
-  </center>
-    <h2>All campgrounds</h2>
+      <div id="cluster-map"></div>
+
+    </center><br>
+
+
+    <form action="/campgrounds/search">
+      <label for="search">
+        <h4 class="fs-5">
+          Search any campground</h4>
+      </label>
+      <input type="text" name="searchTerm" class="form-control">
+      <button class="btn btn-success btn-sm p-2 mt-1">Search</button>
+    </form>
+
     <br>
-
-    <% for(let campground of campgrounds) { %>
-        <div class="card mb-3">
-            <div class="row">
-                <div class="col-md-4">
-
-                    <img class="img-fluid" src="<%= campground.images[0].url %>" alt="">
-                </div>
-                <div class="col-md-8">
-                    <h5 class="card-title mt-3">
-                        <%= campground.title %>
-                    </h5>
-                    <p class="card-text">
-                        <%= campground.description %>
-                    </p>
-                    <p class="card-text"><small class="text-muted">
-                            <%= campground.location %>
-                        </small>
-
-                    </p>
-                    <a class="btn btn-primary mb-3" href="campgrounds/<%=campground.id %>">View Location</a>
-
-                </div>
-
-            </div>
+    <h2 class="fs-3">All Campgrounds</h2>
+    <br>
+    <% for (let campground of campgrounds) { %>
+      <div class="card mb-3">
+        <div class="row">
+          <div class="col-md-4">
+            <img class="img-fluid" src="<%= campground.images[0].url %>" alt="">
+          </div>
+          <div class="col-md-8">
+            <h5 class="card-title mt-3">
+              <%= campground.title %>
+            </h5>
+            <p class="card-text">
+              <%= campground.description %>
+            </p>
+            <a class="btn btn-primary mb-3" href="campgrounds/<%= campground.id %>">View Location</a>
+          </div>
         </div>
-        <% } %>
+      </div>
+      <% } %>
+        <% } else { %>
+          <style>
+            .playfair-display-playfairFont {
+              font-family: "Playfair Display", serif;
+              font-optical-sizing: auto;
+              font-weight: 600;
+              font-style: normal;
+            }
+
+            .open-sans-opensansFont {
+              font-family: "Open Sans", sans-serif;
+              font-optical-sizing: auto;
+              font-weight: 600;
+              font-style: normal;
+              font-variation-settings:
+                "wdth" 100;
+            }
+
+            #notfound {
+              width: 100%;
+              height: auto;
+
+
+            }
+          </style>
+          
+          <div class="container">
+            <center>
+              <h3 class="playfair-display-playfairFont">No Campground Datas Available </h3>
+            </center>
+            <img src="https://static-00.iconduck.com/assets.00/404-page-not-found-illustration-2048x998-yjzeuy4v.png"
+              alt="" id="notfound">
+          </div>
+          <% } %>
             <script>
-//                 const sphereMap = document.getElementById("map");
+              // Initialize MapTiler SDK
+              maptilersdk.config.apiKey = 'VFBv4l3uLTmbnkv0Hqd4';
 
-// let rotation = 0;
+              const campgrounds = { features: <%- JSON.stringify(campgrounds) %> }
 
-// function rotateSphereMap() {
-//     rotation += 0.5; // Adjust the value for desired rotation speed
-//     sphereMap.style.transform = `rotateY(${rotation}deg)`;
-//     window.requestAnimationFrame(rotateSphereMap);
-// }
-
-// rotateSphereMap();
-
+              const maptiler = new maptilersdk.Map({
+                container: 'cluster-map',
+                style: maptilersdk.MapStyle.DATAVIZ.DARK,
+                center: [-103.59179687498357, 40.66995747013945],
+                zoom: 3,
+              });
 
 
-                const locations = JSON.parse('<%= JSON.stringify(locations) %>');
-                maptilersdk.config.apiKey = 'VFBv4l3uLTmbnkv0Hqd4';
-
-                const map = new maptilersdk.Map({
-                    container: 'map',
-                    style: maptilersdk.MapStyle.STREETS.DARK,
-                    center: [0, 0],
-                    zoom: 10,
-                    hash: true,
+              maptiler.on('load', function () {
+                // Add a new source from our GeoJSON data
+                maptiler.addSource('campgrounds', {
+                  type: 'geojson',
+                  // Point to GeoJSON data (replace with your data)
+                  data: campgrounds,
+                  cluster: true,
+                  clusterMaxZoom: 14, // Max zoom to cluster points on
+                  clusterRadius: 50,
+                  // Radius of each cluster when clustering points (defaults to 50)
                 });
 
-                
+                maptiler.addLayer({
+                  id: 'clusters',
+                  type: 'circle',
+                  source: 'campgrounds',
+                  filter: ['has', 'point_count'],
+                  paint: {
+                    // Use step expressions to implement three types of circles
+                    'circle-color': [
+                      'step',
+                      ['get', 'point_count'],
+                      '#00BCD4',
+                      10,
+                      '#2196F3',
+                      30,
+                      '#3F51B5'
+                    ],
+                    'circle-radius': [
+                      'step',
+                      ['get', 'point_count'],
+                      15,
+                      10,
+                      20,
+                      30,
+                      25
+                    ]
+                  }
+                });
 
-                for (let location of locations) {
-                    new maptilersdk.Marker()
-                        .setLngLat(location)
-                        .addTo(map);
-                }
+                maptiler.addLayer({
+                  id: 'cluster-count',
+                  type: 'symbol',
+                  source: 'campgrounds',
+                  filter: ['has', 'point_count'],
+                  layout: {
+                    'text-field': '{point_count_abbreviated}',
+                    'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+                    'text-size': 12
+                  }
+                });
+
+                maptiler.addLayer({
+                  id: 'unclustered-point',
+                  type: 'circle',
+                  source: 'campgrounds',
+                  filter: ['!', ['has', 'point_count']],
+                  paint: {
+                    'circle-color': '#11b4da',
+                    'circle-radius': 4,
+                    'circle-stroke-width': 1,
+                    'circle-stroke-color': '#fff'
+                  }
+                });
+
+                // Inspect a cluster on click
+                maptiler.on('click', 'clusters', function (e) {
+                  const features = maptiler.queryRenderedFeatures(e.point, {
+                    layers: ['clusters']
+                  });
+                  const clusterId = features[0].properties.cluster_id;
+                  maptiler.getSource('campgrounds').getClusterExpansionZoom(
+                    clusterId,
+                    function (err, zoom) {
+                      if (err) return;
+
+                      maptiler.easeTo({
+                        center: features[0].geometry.coordinates,
+                        zoom: zoom
+                      });
+                    }
+                  );
+                });
+
+                // Open popup on click for unclustered points
+                maptiler.on('click', 'unclustered-point', function (e) {
+                  const { popUpMarkup } = e.features[0].properties;
+                  const coordinates = e.features[0].geometry.coordinates.slice();
+
+                  // Adjust coordinates for wrapping around the world
+                  while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+                    coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+                  }
+
+                  const popup = new maptilersdk.Popup();
+                  popup.setLngLat(coordinates)
+                    .setHTML(popUpMarkup)
+                    .addTo(maptiler);
+                });
+
+                maptiler.on('mouseenter', 'clusters', function () {
+                  maptiler.getCanvas().style.cursor = 'pointer';
+                });
+                maptiler.on('mouseleave', 'clusters', function () {
+                  maptiler.getCanvas().style.cursor = '';
+                });
+              });
+
 
 
 

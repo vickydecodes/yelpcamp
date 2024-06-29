@@ -9,7 +9,7 @@
     <div class="row">
         <h1 class="text-center">New Campground</h1>
         <div class="col-6 offset-3">
-            <form action="/campgrounds" method="post" class="formvalid" novalidate enctype="multipart/form-data">
+            <form action="/campgrounds/new" method="post" class="formvalid" novalidate enctype="multipart/form-data" id="form">
                 <div>
                     <label class="form-label" for="title">Title: </label>
                     <input class="form-control" autocomplete="off" type="text" id="title" name="campground[title]"
@@ -26,15 +26,14 @@
                 <div>
                     <label class="form-label" for="location">Coordinates: </label>
                     <div class="input-group mb-3">
-                        <input class="form-control" placeholder="lattitude" required autocomplete="off"
-                             id="lat" readonly>
-                             <input class="form-control" placeholder="lattitude" required autocomplete="off"
-                             id="lat"  name="location[lat]">
-                        <input class="form-control d-none" placeholder="longitude" required autocomplete="off" 
-                            id="lon" readonly>
-                            <input class="form-control d-none" placeholder="longitude" required autocomplete="off" 
-                            id="lon" name="location[lon]">
-                            
+                        <input class="form-control" placeholder="lattitude" required autocomplete="off" id="lat"
+                            readonly>
+                            <input class="form-control d-none" type="text" placeholder="geometry" required autocomplete="off" id="geometry"
+                            name="geometry">
+                        <input class="form-control " placeholder="longitude" required autocomplete="off" id="lon"
+                            readonly>
+                        
+
                     </div>
                     <div class="valid-feedback">
                         Looks good!
@@ -48,7 +47,7 @@
                     <label class="form-label" for="location">Location: </label>
                     <div class="input-group mb-3">
                         <input class="form-control" placeholder="place" required autocomplete="off" type="text"
-                            id="place" name="location[place]" required>
+                            id="place" name="campground[location]" required>
 
                     </div>
                     <div class="valid-feedback">
@@ -114,12 +113,13 @@
 
 
         const place = document.querySelector('#place');
-        const lats = document.querySelectorAll('#lat');
-        const lons = document.querySelectorAll('#lon')
+        const lat = document.querySelector('#lat');
+        const lon = document.querySelector('#lon');
+        const geometryinput = document.querySelector('#geometry')
 
         const map = new maptilersdk.Map({
             container: 'map',
-            style: maptilersdk.MapStyle.STREETS,
+            style: maptilersdk.MapStyle.DATAVIZ.DARK,
             center: [16.62662018, 49.2125578],
             zoom: 14,
             hash: true,
@@ -134,47 +134,43 @@
             console.log("Coordinates:", coordinates);
             console.log("Formatted Address:", formattedAddress); // Optional
 
-            // Use the retrieved coordinates and address data for further actions
-            // (e.g., center the map on the searched location, display markers)
-            map.setCenter(coordinates); // Example: Center the map on the searched location
+            map.setCenter(coordinates);
         };
 
-        // Function to handle geocoding errors
         const handleGeocodingError = (error) => {
             console.error("Geocoding error:", error);
-            // Handle errors gracefully (e.g., display an error message to the user)
             alert("Geocoding failed! Please try again with a different search term.");
         };
 
-        // Add the geocoding control to the map
         map.addControl(geocodingControl, 'top-left');
-
-        // Event listener for geocoding results (corrected method)
+dfdfdfdfdf
         geocodingControl.addEventListener('response', (data) => {
             console.log(data)
             let data2 = data.detail
             const coordinates = data2.featureCollection.features[0].geometry.coordinates;
             const formattedAddress = data2.featureCollection.features[0].place_name;
-            let LattitudeLongitude = data2.featureCollection.features[0].center// Optional
-
-
-            // Look for district information in the context array
+            let LattitudeLongitude = data2.featureCollection.features[0].center
+            let geometry = data2.featureCollection.features[0].geometry// Optional
+            console.log(geometry)
+            lat.value = geometry.coordinates[0];
+            lon.value = geometry.coordinates[1];
+            geometry.coordinates[1] = LattitudeLongitude[1]
+            geometry.coordinates[0] = LattitudeLongitude[0]
+            geometryinput.value = JSON.stringify(geometry)
 
             console.log("Coordinates:", coordinates);
             console.log("Formatted Address:", formattedAddress);
 
             place.value = formattedAddress;
-
-            lats.forEach(lat => {
-                lat.value = LattitudeLongitude[0];
-            })
-            lons.forEach(lon => {
-                lon.value = LattitudeLongitude[1]
-            })
-
             map.setCenter(coordinates);
 
         });
 
         geocodingControl.addEventListener('error', handleGeocodingError);
+
+        const form = document.getElementById('form');
+
+        form.addEventListener('submit', function(){
+            console.log('submitted')
+        })
     </script>

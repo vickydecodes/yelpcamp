@@ -1,15 +1,16 @@
 import Joi from 'joi'
 
+
 export const campgroundSchema = Joi.object({
     campground: Joi.object({
         title: Joi.string().required(),
         price: Joi.number().required().min(0),
-        // image: Joi.string().required(),
         description: Joi.string().required(),
-        // location: Joi.string().required()
+        // Add more validations as needed for other campground fields
     }).required(),
-    deleteImages: Joi.array()
+    deleteImages: Joi.array().items(Joi.string()) // Assuming deleteImages is an array of strings (filenames)
 });
+
 
 export const reviewSchema = Joi.object({
     review: Joi.object({
