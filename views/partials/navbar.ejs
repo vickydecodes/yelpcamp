@@ -1,5 +1,5 @@
-<nav class="navbar sticky-top navbar-expand-lg bg-dark navbar-dark mb-3">
-  <div class="container-fluid">
+<nav class="navbar navbar-lg sticky-top navbar-expand-lg bg-dark navbar-dark mb-3">
+  <div class="container-fluid p-2">
     <a class="navbar-brand" href="#">Yelpcamp</a>
     <button class="navbar-toggler ms-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText"
     aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
@@ -10,17 +10,23 @@
       <a href="/" class="nav-link">Home</a>
       <a href="/campgrounds" class="nav-link">All Campgrounds</a>
       <a href="/campgrounds/new" class="nav-link">New Campground</a>
+      <% if(currentUser) {%>
+        <a href="/bookmarks" class="nav-link">Bookmarks</a>
+
+        <% } %>
      </div>
-    </div>
     
-    <div class="navbar-nav ml-auto " >
+    
+    <div class="navbar-nav ms-auto">
       <% if(!currentUser) {%>
         <a href="/register" class="nav-link">Register</a>
         <a href="/login" class="nav-link">Login</a>
         <% } else{ %>
           <a href="/logout" class="nav-link">Logout</a>
+          <a href="/profile"><img class="mx-2" src="<%= currentUser.profile %>" style="width: 40px; height: 40px; border-radius: 50%; object-fit: contain;" alt="">
+          </a>
           <% } %>
-          
+        </div>
     </div>
   </div>
 </nav>

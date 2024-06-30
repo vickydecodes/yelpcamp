@@ -1,7 +1,8 @@
 import catchAsync from '../utils/catchAsync.mjs';
 import Campground from '../models/campground.mjs';
 import { cloudinary } from '../cloudinary/main.mjs';
-import { json } from 'express';
+import User from '../models/user.mjs';
+
 
 
 const renderIndex = catchAsync(async (req, res) => {
@@ -15,8 +16,8 @@ const renderNewForm = (req, res) => {
 
 const searchCampgrounds = catchAsync(async (req, res) => {
     const { searchTerm } = req.query;
-    console.log(searchTerm)
-    const campgrounds = await Campground.find({ title: { $regex: searchTerm  } });
+    const search = searchTerm.toLowerCase().trim().split(' ').join('')
+    const campgrounds = await Campground.find({ searchTerm: { $regex: search } });
     res.render('./campgrounds/index', { campgrounds })
 })
 
@@ -81,6 +82,23 @@ const deleteCampground = async (req, res) => {
     res.redirect('/campgrounds')
 }
 
+const addToFavourites = catchAsync(async (req, res) => {
+    const { id } = req.params;
+    const campground = await Campground.findById(id);
+    const user = await User.findById(req.user._id).populate('bookmarks');
+    const isCampgroundinBookmarks = user.bookmarks.some(mark => mark.id === campground.id);
+    if (isCampgroundinBookmarks) {
+        req.flash('error', 'The campground is already added to your Bookmarks!');
+    } else {
+        await user.bookmarks.unshift(campground);
+        await user.save();
+        req.session.user = user;
+        req.flash('success', 'Successfully added the campground to your bookmarks!');
+    }
+    res.redirect('/campgrounds')
+})
+
+
 const campgrounds = {
     renderIndex,
     createNewCampground,
@@ -89,7 +107,8 @@ const campgrounds = {
     renderEditForm,
     editCampground,
     deleteCampground,
-    searchCampgrounds
+    searchCampgrounds,
+    addToFavourites,
 };
 
 export default campgrounds

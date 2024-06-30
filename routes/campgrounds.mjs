@@ -15,6 +15,9 @@ router.route('/new')
     .post(isLoggedIn, upload.array('image'), campgrounds.createNewCampground);
 
 
+router.post('/:id/favourites', isLoggedIn, campgrounds.addToFavourites);
+
+
 router.route('/search')
 .get(isLoggedIn, campgrounds.searchCampgrounds);
 

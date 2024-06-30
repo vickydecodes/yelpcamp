@@ -27,6 +27,9 @@ const CampgroundSchema = new Schema({
             required: true
         }
     },
+    searchTerm: {
+        type: String,
+    },
     price: Number,
     description: String,
     location: String,
@@ -42,9 +45,14 @@ const CampgroundSchema = new Schema({
     ]
 }, opts);
 
+CampgroundSchema.pre('save', function (next) {
+    this.searchTerm = this.title.toLowerCase().replace(/\s+/g, '');
+    next();
+});
+
 
 CampgroundSchema.virtual('properties.popUpMarkup').get(function () {
-    const string =  `
+    const string = `
     <strong><a href=\"/campgrounds/${this._id}\">${this.title}</a><strong>
     <p>${this.description.substring(0, 20)}...</p>`
     return string

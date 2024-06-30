@@ -1,5 +1,6 @@
 import User from '../models/user.mjs';
 import catchAsync from '../utils/catchAsync.mjs';
+import Campground from '../models/campground.mjs';
 
 const renderRegisterForm = (req, res) => {
     res.render('../views/users/register')
@@ -42,13 +43,43 @@ const logoutUser = (req, res, next) => {
     });
 }
 
+const renderProfilePage = catchAsync(async (req, res) => {
+    const user = await User.findById(req.user._id);
+    const campgrounds = await Campground.find({ author: user })
+    res.render('campgrounds/profile', { user,  campgrounds })
+})
+
+const updateProfile = catchAsync(async (req, res) => {
+    const { user, address } = req.body
+    const updateduser = await User.findByIdAndUpdate(req.user._id, {
+        username: user.username,
+        profile: user.profile,
+        mobile: user.mobile,
+    },
+        { new: true }
+    );
+    req.flash('Updated successfully')
+    console.log(req.body)
+    req.session.user = updateduser;
+    res.redirect('/profile')
+})
+
+const renderBookmarks = catchAsync(async (req, res) => {
+    const user = await User.findById(req.user._id).populate('bookmarks');
+    const bookmarks = user.bookmarks
+    res.render('campgrounds/bookmarks', { bookmarks })
+})
+
 
 const users = {
     renderRegisterForm,
     registerUser,
     renderLoginForm,
     loginUser,
-    logoutUser
+    logoutUser,
+    renderProfilePage,
+    updateProfile,
+    renderBookmarks
 }
 
 export default users

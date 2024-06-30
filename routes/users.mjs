@@ -16,4 +16,12 @@ router.route("/login")
 
 router.get('/logout', users.logoutUser)
 
+router.route('/profile')
+    .get(users.renderProfilePage)
+    .put(users.updateProfile)
+
+
+router.route('/bookmarks')
+    .get(users.renderBookmarks)
+
 export default router
