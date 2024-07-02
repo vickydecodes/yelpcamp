@@ -52,7 +52,7 @@ const renderProfilePage = catchAsync(async (req, res) => {
 const updateProfile = catchAsync(async (req, res) => {
     const { user, address } = req.body
     const updateduser = await User.findByIdAndUpdate(req.user._id, {
-        username: user.username,
+        name: user.name,
         profile: user.profile,
         mobile: user.mobile,
     },

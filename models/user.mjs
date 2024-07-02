@@ -19,6 +19,10 @@ const UserSchema = new Schema ({
     mobile:{
         type: Number,
         default: 1234567890
+    },
+    name:{
+        type:String,
+        default: 'Anonymous'
     }
 })
 

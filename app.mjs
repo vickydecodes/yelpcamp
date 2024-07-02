@@ -14,6 +14,8 @@ import User from './models/user.mjs';
 import campgroundRoutes from './routes/campgrounds.mjs';
 import reviewRoutes from './routes/reviews.mjs';
 import userRoutes from './routes/users.mjs';
+import { createServer } from 'http';
+import { initializeSocket } from './socket.mjs';
 
 
 const app = express();
@@ -54,6 +56,11 @@ const sessionConfig = {
     maxAge: 1000 * 60 * 60 * 24 * 7,
   },
 };
+
+
+
+const server = createServer(app);
+initializeSocket(server);
 
 
 app.use(session(sessionConfig));

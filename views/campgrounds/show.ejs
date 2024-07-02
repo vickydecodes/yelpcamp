@@ -29,7 +29,7 @@
                         <%= campground.title%>
                     </h5>
                     <p class="card-text">
-                        Uploaded By:  <%= campground.author.username%>
+                        Uploaded By:  <%= campground.author.name%>
                     </p>
                     <p class="card-text">
                         <%= campground.description%>
@@ -40,6 +40,12 @@
                         <%= campground.location%>
                     </li>
                     <li class="list-group-item">$<%= campground.price%>/night</li>
+                    <li class="list-group-item text-muted">
+                        <form action="/campgrounds/<%=campground.id %>/favourites" method="post">
+                            <button class="btn mx-2" style="background-color: #fdabd4; color: white" type="submit">Add to Bookmarks</button>
+                          </form>
+                          <a href="https://en.wikipedia.org/wiki/<%= campground.searchTerm.split(',')[0] %>" class="btn btn-info">Search in wikipedia</a>
+                    </li>
                 </ul>
                 <% if(currentUser && campground.author.equals(currentUser._id)) {%>
                 <div class="card-body">

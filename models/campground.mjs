@@ -42,7 +42,11 @@ const CampgroundSchema = new Schema({
             type: Schema.Types.ObjectId,
             ref: 'Review'
         }
-    ]
+    ],
+    likes:{
+        type: Number,
+        default: 0
+    }
 }, opts);
 
 CampgroundSchema.pre('save', function (next) {
