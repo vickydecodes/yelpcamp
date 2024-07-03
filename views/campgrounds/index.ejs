@@ -46,15 +46,25 @@
 
               <div class="card-footer mt-auto d-flex align-items-center">
                 <a class="btn btn-primary " href="campgrounds/<%= campground.id %>">View Location</a>
-                <button class="btn shadow-none ms-3" id="heartButton" style="color: black;border: 0px">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="black" class="bi bi-heart-fill"
-                    viewBox="0 0 16 16">
-                    <path fill-rule="evenodd" id="heartsvg"
-                      d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314" />
-                  </svg> &nbsp; <span class="totalLikes">
-                    <%= campground.likes.totalLikes %> 
-                  </span></button>           
-                  
+                <% if(currentUser) {%>
+                  <button class="btn shadow-none ms-3 d-none" id="unlikeButton" style="color: black;border: 0px">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="black" class="bi bi-heart-fill"
+                      viewBox="0 0 16 16">
+                      <path fill-rule="evenodd" id="heartsvg"
+                        d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314" />
+                    </svg> &nbsp; <span class="totalLikes">
+                      <%= campground.likes.totalLikes %>
+                    </span></button>
+                  <button class="btn shadow-none ms-3 d-none" id="heartButton" style="color: black;border: 0px">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
+                      class="bi bi-heart" viewBox="0 0 16 16">
+                      <path
+                        d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15" />
+                    </svg>&nbsp; <span class="totalLikes">
+                      <%= campground.likes.totalLikes %>
+                    </span></button>
+                  <% } %>
+
               </div>
             </div>
           </div>
@@ -224,12 +234,22 @@
               <script src="/socket.io/socket.io.js"></script>
               <script>
                 const socket = io();
-                const user = '<%= currentUser._id %>';
+                const user = '<%= currentUser.id %>';
                 const allCampgrounds =  <%- JSON.stringify(campgrounds) %>
                 const campgroundIds = allCampgrounds.map(camp => camp.id)
                 const heartButtons = document.querySelectorAll('#heartButton');
-                // const heartsvgs = document.querySelectorAll('#heartsvg');
-                console.log(heartButtons)
+                const unlikeButtons = document.querySelectorAll('#unlikeButton')
+                console.log(heartButtons);
+
+                allCampgrounds.forEach((camp, index) =>{
+                  if(camp.likes.likedBy.some(user2 => user2 == user)){
+                    unlikeButtons[index].classList.remove('d-none');
+                  }else{
+                    heartButtons[index].classList.remove('d-none')
+                  }
+                })
+
+                
 
                 heartButtons.forEach((btn, index) => {
                   btn.addEventListener('click', () => {
@@ -239,22 +259,35 @@
                       campground: campgroundIds[index]
                     }
                     console.log(data)
-                    // heartsvgs[index].style.fill = heartsvg.style.fill === 'black' ? 'pink' : 'black';
-                    socket.emit('addLike', data)
+                    socket.emit('addLike', data);
+                    unlikeButtons[index].classList.remove('d-none')
+                    heartButtons[index].classList.add('d-none')
                   });
                 })
 
-                socket.on('likeError', err =>{
-                  console.log(err)
-                 alert(err)
-                })
-                socket.on('likeCount', count => {
-                  const totalLikes = document.querySelector('.totalLikes');
-                  totalLikes.innerText = count;
-                 
+                unlikeButtons.forEach((btn, index) => {
+                  btn.addEventListener('click', () => {
+                    console.log('unliked');
+                    const data = {
+                      user: user,
+                      campground: campgroundIds[index]
+                    }
+                    console.log(data);
+                    socket.emit('dislike', data)
+                    heartButtons[index].classList.remove('d-none');
+                    unlikeButtons[index].classList.add('d-none')
+                  })
                 })
 
                 
+
+                socket.on('likeCount', count => {
+                  const totalLikes = document.querySelector('.totalLikes');
+                  totalLikes.innerText = count;
+
+                })
+
+
 
 
               </script>
