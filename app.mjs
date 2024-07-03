@@ -14,7 +14,8 @@ import User from './models/user.mjs';
 import campgroundRoutes from './routes/campgrounds.mjs';
 import reviewRoutes from './routes/reviews.mjs';
 import userRoutes from './routes/users.mjs';
-import { createServer } from 'http';
+import http from 'http';
+
 import { initializeSocket } from './socket.mjs';
 
 
@@ -59,8 +60,12 @@ const sessionConfig = {
 
 
 
-const server = createServer(app);
+const server = http.createServer(app);
 initializeSocket(server);
+
+
+
+
 
 
 app.use(session(sessionConfig));
@@ -77,7 +82,7 @@ passport.deserializeUser(User.deserializeUser());
 
 
 app.use((req, res, next) => {
-  console.log(req.session);
+  // console.log(req.session);
   res.locals.currentUser = req.user;
   res.locals.success = req.flash('success');
   res.locals.error = req.flash('error');
@@ -102,6 +107,6 @@ app.use((err, req, res, next) => {
 });
 
 
-app.listen(3000, () => {
+server.listen(3000, () => {
   console.log('LISTENING ON PORT 3000');
 });

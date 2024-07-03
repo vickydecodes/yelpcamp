@@ -51,7 +51,10 @@
                     viewBox="0 0 16 16">
                     <path fill-rule="evenodd" id="heartsvg"
                       d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314" />
-                  </svg> </button>
+                  </svg> &nbsp; <span class="totalLikes">
+                    <%= campground.likes.totalLikes %> 
+                  </span></button>           
+                  
               </div>
             </div>
           </div>
@@ -91,6 +94,7 @@
             <img src="https://static-00.iconduck.com/assets.00/404-page-not-found-illustration-2048x998-yjzeuy4v.png"
               alt="" id="notfound">
           </div>
+
           <% } %>
 
 
@@ -216,17 +220,43 @@
                 });
               });
             </script>
+            <% if(currentUser) {%>
+              <script src="/socket.io/socket.io.js"></script>
+              <script>
+                const socket = io();
+                const user = '<%= currentUser._id %>';
+                const allCampgrounds =  <%- JSON.stringify(campgrounds) %>
+                const campgroundIds = allCampgrounds.map(camp => camp.id)
+                const heartButtons = document.querySelectorAll('#heartButton');
+                // const heartsvgs = document.querySelectorAll('#heartsvg');
+                console.log(heartButtons)
 
-            <script>
-              const heartButton = document.querySelector('#heartButton');
-              const heartsvg = document.querySelector('#heartsvg');
+                heartButtons.forEach((btn, index) => {
+                  btn.addEventListener('click', () => {
+                    console.log('clicked')
+                    const data = {
+                      user: user,
+                      campground: campgroundIds[index]
+                    }
+                    console.log(data)
+                    // heartsvgs[index].style.fill = heartsvg.style.fill === 'black' ? 'pink' : 'black';
+                    socket.emit('addLike', data)
+                  });
+                })
 
-              heartButton.addEventListener('click', () => {
-                heartsvg.style.fill = heartsvg.style.fill === 'black' ? 'pink' : 'black';
-              });
-            </script>
-<script type="module">
-  import { io } from "https://cdn.socket.io/4.7.5/socket.io.esm.min.js";
+                socket.on('likeError', err =>{
+                  console.log(err)
+                 alert(err)
+                })
+                socket.on('likeCount', count => {
+                  const totalLikes = document.querySelector('.totalLikes');
+                  totalLikes.innerText = count;
+                 
+                })
 
-  const socket = io();
-</script>
+                
+
+
+              </script>
+
+              <% } %>
