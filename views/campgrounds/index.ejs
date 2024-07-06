@@ -29,12 +29,12 @@
     <% for (let campground of campgrounds) { %>
       <div class="card mb-3">
         <div class="row g-0">
-          <div class="col-md-4">
+          <div class="col-md-4 d-flex align-items-center">
             <img src="<%= campground.images[0].url %>" class="img-fluid rounded-start" alt="...">
           </div>
           <div class="col-md-8 d-flex">
             <div class="card-body d-flex flex-column p-0">
-              <div class="p-2">
+              <div class="p-3">
                 <h5 class="card-title"> <a href="https://www.google.com/search?q=<%= campground.title %>"
                     style="text-decoration: none;">
                     <%= campground.title %>
@@ -42,6 +42,19 @@
                 <p class="card-text">
                   <%= campground.description %>
                 </p>
+              </div>
+              <div class="mt-auto">
+                <% if(campground.recommendedPlaces.length> 0) {%>
+                  <h4 class="fs-5 ps-3">Places to Visit in <%= campground.title %>
+                  </h4>
+                  <ul class="list-group p-3">
+                    <% for(let place of campground.recommendedPlaces) {%>
+                      <li class="list-group-item">
+                        <%= place %>
+                      </li>
+                      <% } %>
+                  </ul>
+                  <% } %>
               </div>
 
               <div class="card-footer mt-auto d-flex align-items-center">
@@ -52,7 +65,7 @@
                       viewBox="0 0 16 16">
                       <path fill-rule="evenodd" id="heartsvg"
                         d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314" />
-                    </svg> &nbsp; <span class="totalLikes">
+                    </svg> &nbsp; <span class="totalLikesForLikes">
                       <%= campground.likes.totalLikes %>
                     </span></button>
                   <button class="btn shadow-none ms-3 d-none" id="heartButton" style="color: black;border: 0px">
@@ -60,7 +73,7 @@
                       class="bi bi-heart" viewBox="0 0 16 16">
                       <path
                         d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15" />
-                    </svg>&nbsp; <span class="totalLikes">
+                    </svg>&nbsp; <span class="totalLikesForUnlikes">
                       <%= campground.likes.totalLikes %>
                     </span></button>
                   <% } %>
@@ -230,6 +243,7 @@
                 });
               });
             </script>
+
             <% if(currentUser) {%>
               <script src="/socket.io/socket.io.js"></script>
               <script>
@@ -238,18 +252,26 @@
                 const allCampgrounds =  <%- JSON.stringify(campgrounds) %>
                 const campgroundIds = allCampgrounds.map(camp => camp.id)
                 const heartButtons = document.querySelectorAll('#heartButton');
-                const unlikeButtons = document.querySelectorAll('#unlikeButton')
-                console.log(heartButtons);
+                const unlikeButtons = document.querySelectorAll('#unlikeButton');
+                const totalLikes1 = document.querySelectorAll('.totalLikesForLikes');
+                const totalLikes2 = document.querySelectorAll('.totalLikesForUnlikes')
 
-                allCampgrounds.forEach((camp, index) =>{
-                  if(camp.likes.likedBy.some(user2 => user2 == user)){
+                console.log(heartButtons);
+                console.log(unlikeButtons);
+                console.log(totalLikes1);
+                console.log(totalLikes2)
+
+
+
+                allCampgrounds.forEach((camp, index) => {
+                  if (camp.likes.likedBy.some(user2 => user2 == user)) {
                     unlikeButtons[index].classList.remove('d-none');
-                  }else{
+                  } else {
                     heartButtons[index].classList.remove('d-none')
                   }
                 })
 
-                
+
 
                 heartButtons.forEach((btn, index) => {
                   btn.addEventListener('click', () => {
@@ -258,7 +280,6 @@
                       user: user,
                       campground: campgroundIds[index]
                     }
-                    console.log(data)
                     socket.emit('addLike', data);
                     unlikeButtons[index].classList.remove('d-none')
                     heartButtons[index].classList.add('d-none')
@@ -272,18 +293,22 @@
                       user: user,
                       campground: campgroundIds[index]
                     }
-                    console.log(data);
                     socket.emit('dislike', data)
                     heartButtons[index].classList.remove('d-none');
                     unlikeButtons[index].classList.add('d-none')
                   })
                 })
 
-                
 
-                socket.on('likeCount', count => {
-                  const totalLikes = document.querySelector('.totalLikes');
-                  totalLikes.innerText = count;
+
+                socket.on('likeCount', data => {
+                  const { id, likecount } = data;
+                  allCampgrounds.forEach((camp, index) => {
+                    if (camp.id == id) {
+                      totalLikes1[index].innerText = likecount;
+                      totalLikes2[index].innerText = likecount;
+                    }
+                  })
 
                 })
 

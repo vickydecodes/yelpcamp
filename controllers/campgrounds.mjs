@@ -26,10 +26,11 @@ const createNewCampground = catchAsync(async (req, res) => {
     campground.geometry = JSON.parse(req.body.geometry);
     campground.images = req.files.map(f => ({ url: f.path, filename: f.filename }))
     campground.author = req.user._id;
+campground.recommendedPlaces = [...req.body.places]
     await campground.save();
     req.flash('success', 'Sucessfully added a campground!')
     res.redirect(`/campgrounds/${campground.id}`);
-    res.send(campground)
+    // res.send(campground)
 })
 
 const showCampground = catchAsync(async (req, res) => {

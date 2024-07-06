@@ -50,10 +50,10 @@
                     </div>
                     <div class="card-footer mt-auto d-flex align-items-center">
                       <a class="btn btn-primary " href="campgrounds/<%= campground.id %>">View Location</a>
-                      <form action="/campgrounds/<%=campground.id %>/favourites" method="post">
-                        <button class="btn mx-2" style="background-color: #fdabd4; color: white" type="submit">Add to Favourites</button>
+                      <a class="card-link btn btn-info ms-2" href="/campgrounds/<%=campground._id%>/edit">Edit</a>
+                      <form class="d-inline" action="/campgrounds/<%=campground._id%>?_method=DELETE" method="POST">
+                          <button class="btn btn-danger mx-2">Delete</button>
                       </form>
-                      <a href="https://en.wikipedia.org/wiki/<%= campground.title.split(',').join('') %>" class="btn btn-info">Search in wikipedia</a>
                     </div>
                   </div>
                 </div>

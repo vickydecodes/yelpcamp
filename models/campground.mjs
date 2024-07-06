@@ -52,7 +52,10 @@ const CampgroundSchema = new Schema({
             type: Schema.Types.ObjectId,
             ref: 'User'
         }]
-    }
+    },
+    recommendedPlaces:[{
+        type: String
+    }]
 }, opts);
 
 CampgroundSchema.pre('save', function (next) {
