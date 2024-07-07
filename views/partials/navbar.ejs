@@ -1,10 +1,12 @@
 <nav class="navbar navbar-lg sticky-top navbar-expand-lg bg-dark navbar-dark mb-3">
   <div class="container-fluid p-2">
     <a class="navbar-brand" href="#">Yelpcamp</a>
+   <div class="ms-auto">
     <button class="navbar-toggler ms-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText"
     aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
+   </div>
     <div class="collapse navbar-collapse" id="navbarText">
      <div class="navbar-nav">
       <a href="/" class="nav-link">Home</a>
@@ -19,6 +21,7 @@
     
     <div class="navbar-nav ms-auto">
       <% if(!currentUser) {%>
+        
         <a href="/register" class="nav-link">Register</a>
         <a href="/login" class="nav-link">Login</a>
         <% } else{ %>
@@ -26,6 +29,16 @@
           <a href="/profile"><img class="mx-2" src="<%= currentUser.profile %>" style="width: 40px; height: 40px; border-radius: 50%; object-fit: contain;" alt="">
           </a>
           <% } %>
+          <div class="dropdown">
+            <a class="btn nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+           Theme
+            </a>
+          
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" onblur="toggleLight()">Light</a></li>
+              <li><a class="dropdown-item"onblur="toggleDark()">Dark</a></li>
+            </ul>
+          </div>
         </div>
     </div>
   </div>
