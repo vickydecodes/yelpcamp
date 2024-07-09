@@ -1,38 +1,48 @@
 <% layout('layouts/boilerplate')%>
 
-    <h1>Login form</h1>
-    <br>
+
+<% layout('layouts/boilerplate')%>
+
+<div class="container d-flex justify-content-center align-items-center mt-5">
     <div class="row">
-        <div class="col-6 offset-3">
-            <form action="/login" method="POST" class="mb-3 formvalid" novalidate>
-                <div class="form-floating">
+        <div class="col-md-6 offset-md-3 col-xl-4 offset-xl-4">
+            <div class="card shadow">
+                <img src="https://images.unsplash.com/photo-1571863533956-01c88e79957e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1267&q=80"
+                    alt="" class="card-img-top" />
+                <div class="card-body">
+                    <h5 class="card-title">Login</h5>
+                    <form action="/login" method="POST" class="formvalid" novalidate>
+                        <div class="form-floating">
                     
-                    <input class="form-control" required autocomplete="off" type="text" id="location"
-                        name="username" placeholder="jjj" required>
-                        <label for="location">Username </label>
-                    <div class="valid-feedback">
-                        Looks good!
-                    </div>
-                    <div class="invalid-feedback">
-                        Please give a usename!
-                    </div>
+                            <input class="form-control" required autocomplete="off" type="text" id="username"
+                                name="username" placeholder="aaa" required>
+                                <label for="username">Username </label>
+                            <div class="valid-feedback">
+                                Looks good!
+                            </div>
+                            <div class="invalid-feedback">
+                                Please give a usename!
+                            </div>
+                        </div>
+                        <br>
+                        <div class="form-floating">
+                            
+                            <input class="form-control" required autocomplete="off" type="password" id="password" placeholder="aaa"
+                                name="password" required>
+                                <label for="password">Password </label>
+                            <div class="valid-feedback">
+                                Looks good!
+                            </div>
+                            <div class="invalid-feedback">
+                                Please give a password!
+                            </div>
+                        </div>
+                        <br>
+                        <button class="btn btn-success btn-block">Login</button>
+                    </form>
                 </div>
-                <br>
-                <div class="form-floating">
-                    
-                    <input class="form-control" required autocomplete="off" type="password" id="location" placeholder="jjj"
-                        name="password" required>
-                        <label  for="location">Password </label>
-                    <div class="valid-feedback">
-                        Looks good!
-                    </div>
-                    <div class="invalid-feedback">
-                        Please give a password!
-                    </div>
-                </div>
-                <br>
-                <button class="btn btn-success">Login</button>
-                
-            </form>
+            </div>
         </div>
     </div>
+</div>
+

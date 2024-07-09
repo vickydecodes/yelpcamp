@@ -22,10 +22,11 @@ const CampgroundSchema = new Schema({
             type: String,
             required: true
         },
-        coordinates: {
+        coordinates:{
             type: [Number],
             required: true
         }
+
     },
     searchTerm: {
         type: String,
@@ -44,7 +45,7 @@ const CampgroundSchema = new Schema({
         }
     ],
     likes: {
-        totalLikes:{
+        totalLikes: {
             type: Number,
             default: 0
         },
@@ -53,9 +54,13 @@ const CampgroundSchema = new Schema({
             ref: 'User'
         }]
     },
-    recommendedPlaces:[{
+    recommendedPlaces: [{
         type: String
-    }]
+    }],
+    postDate: {
+        type: Date,
+        default: Date.now
+    }
 }, opts);
 
 CampgroundSchema.pre('save', function (next) {

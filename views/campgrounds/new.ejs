@@ -9,7 +9,8 @@
     <div class="row">
         <h1 class="text-center">New Campground</h1>
         <div class="col-6 offset-3">
-            <form action="/campgrounds/new" method="post" class="formvalid" novalidate enctype="multipart/form-data" id="form">
+            <form action="/campgrounds/new" method="post" class="formvalid" novalidate enctype="multipart/form-data"
+                id="form">
                 <div>
                     <label class="form-label" for="title">Title: </label>
                     <input class="form-control" autocomplete="off" type="text" id="title" name="campground[title]"
@@ -24,15 +25,15 @@
 
                 <br>
                 <div>
-                    <label class="form-label" for="location">Coordinates: </label>
+                    <label class="form-label" for="geometry">Coordinates: </label>
                     <div class="input-group mb-3">
-                        <input class="form-control" placeholder="lattitude" required autocomplete="off" id="lat"
-                            readonly>
-                            <input class="form-control d-none" type="text" placeholder="geometry" required autocomplete="off" id="geometry"
-                            name="geometry">
-                        <input class="form-control " placeholder="longitude" required autocomplete="off" id="lon"
-                            readonly>
-                        
+                        <input class="form-control" placeholder="lattitude" required autocomplete="off" name="geometry[coordinates]"
+                          id="lat"  readonly>
+                        <input class="form-control d-none" type="text" placeholder="geometry" required
+                            autocomplete="off" id="geometry" name="geometry[type]">
+                        <input class="form-control " placeholder="longitude" required autocomplete="off" name="geometry[coordinates]"
+                          id="lon"  readonly>
+
 
                     </div>
                     <div class="valid-feedback">
@@ -85,20 +86,20 @@
                 </div>
                 <br>
                 <div class="input-group mb-3" required>
-                    <table class="table table-bordered table-striped table-hover">
+                    <table class="table table-bordered  table-hover">
                         <thead>
                             <tr>
                                 <th scope="col">No</th>
-                               
+
                                 <th scope="col">
                                     <center>Places</center>
                                 </th>
                             </tr>
                         </thead>
-                        <tbody id="detailsTable">
+                        <tbody id="detailsTable" class="">
                             <tr>
                                 <th scope="row">1</th>
-                              
+
                                 <td><input type="text" class="form-control shadow-none" name="places"></td>
 
                             </tr>
@@ -110,10 +111,10 @@
                             </tr>
                             <tr>
                                 <th scope="row">3</th>
-                                
+
                                 <td><input type="text" class="form-control shadow-none" name="places"></td>
                             </tr>
-                            
+
                         </tbody>
                         <tr>
 
@@ -150,99 +151,7 @@
     </div>
     </div>
     <script>
-        maptilersdk.config.apiKey = 'VFBv4l3uLTmbnkv0Hqd4';
-
-
-        const place = document.querySelector('#place');
-        const lat = document.querySelector('#lat');
-        const lon = document.querySelector('#lon');
-        const geometryinput = document.querySelector('#geometry')
-
-        const map = new maptilersdk.Map({
-            container: 'map',
-            style: maptilersdk.MapStyle.DATAVIZ.DARK,
-            center: [16.62662018, 49.2125578],
-            zoom: 14,
-            hash: true,
-        });
-
-        const geocodingControl = new maptilersdkMaptilerGeocoder.GeocodingControl({});
-
-        const handleGeocodingResults = (results) => {
-            const coordinates = results[0].coordinates;
-            const formattedAddress = results[0].formattedAddress; // Optional
-
-            console.log("Coordinates:", coordinates);
-            console.log("Formatted Address:", formattedAddress); // Optional
-
-            map.setCenter(coordinates);
-        };
-
-        const handleGeocodingError = (error) => {
-            console.error("Geocoding error:", error);
-            alert("Geocoding failed! Please try again with a different search term.");
-        };
-
-        map.addControl(geocodingControl, 'top-left');
-
-        geocodingControl.addEventListener('response', (data) => {
-            console.log(data)
-            let data2 = data.detail
-            const coordinates = data2.featureCollection.features[0].geometry.coordinates;
-            const formattedAddress = data2.featureCollection.features[0].place_name;
-            let LattitudeLongitude = data2.featureCollection.features[0].center
-            let geometry = data2.featureCollection.features[0].geometry// Optional
-            console.log(geometry)
-            lat.value = geometry.coordinates[0];
-            lon.value = geometry.coordinates[1];
-            geometry.coordinates[1] = LattitudeLongitude[1]
-            geometry.coordinates[0] = LattitudeLongitude[0]
-            geometryinput.value = JSON.stringify(geometry)
-
-            console.log("Coordinates:", coordinates);
-            console.log("Formatted Address:", formattedAddress);
-
-            place.value = formattedAddress;
-            map.setCenter(coordinates);
-
-        });
-
-        geocodingControl.addEventListener('error', handleGeocodingError);
-
-        const form = document.getElementById('form');
-
-        form.addEventListener('submit', function(){
-            console.log('submitted')
-        })
+       const maptilerApiKey = '<%- process.env.MAPTILER_API_KEY %>'
     </script>
-       <script>
-            const addRowbutton = document.querySelector("#addRowButton");
-            const table = document.querySelector("#detailsTable");
-            let count = 4
-
-
-            addRowbutton.addEventListener('click', function () {
-                const trElement = document.createElement('tr');
-                const tdElement1 = document.createElement('td');
-                const thElement = document.createElement('th');
-
-                const input1 = document.createElement('input');
-                input1.setAttribute('class', 'form-control');
-                input1.setAttribute('type', 'text');
-                input1.setAttribute('required', 'true');
-                input1.setAttribute('name', 'places')
-
-                
-
-                trElement.append(thElement)
-                tdElement1.append(input1);
-                trElement.append(tdElement1);
-                thElement.innerHTML = count;
-                table.append(trElement)
-                console.log('clicked');
-                count += 1;
-
-            })
-
-
-        </script>
+    <script src="/javascripts/mapconfig.js"></script>
+    <script src="/javascripts/addRow.js"></script>

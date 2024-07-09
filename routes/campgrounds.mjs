@@ -12,7 +12,7 @@ router.route('/')
 
 router.route('/new')
     .get(isLoggedIn, campgrounds.renderNewForm)
-    .post(isLoggedIn, upload.array('image'), campgrounds.createNewCampground);
+    .post(isLoggedIn, upload.array('image'),validateCampground, campgrounds.createNewCampground);
 
 
 router.post('/:id/favourites', isLoggedIn, campgrounds.addToFavourites);
@@ -23,9 +23,12 @@ router.route('/search')
 
 router.route("/:id")
     .get(isLoggedIn, campgrounds.showCampground)
-    .put(isLoggedIn, isAuthor, upload.array('image'), validateCampground, campgrounds.editCampground)
-    .delete(isLoggedIn, isAuthor, campgrounds.deleteCampground);
+    .delete(isLoggedIn, isAuthor, campgrounds.deleteCampground)
 
-router.get('/:id/edit', isLoggedIn, isAuthor, campgrounds.renderEditForm);
+
+router.route('/:id/edit')
+    .get(isLoggedIn, isAuthor, campgrounds.renderEditForm)
+    .put(isLoggedIn, isAuthor, upload.array('image'),validateCampground, campgrounds.editCampground)
+
 
 export default router;

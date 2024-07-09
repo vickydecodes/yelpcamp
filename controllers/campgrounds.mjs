@@ -26,7 +26,8 @@ const createNewCampground = catchAsync(async (req, res) => {
     campground.geometry = JSON.parse(req.body.geometry);
     campground.images = req.files.map(f => ({ url: f.path, filename: f.filename }))
     campground.author = req.user._id;
-campground.recommendedPlaces = [...req.body.places]
+    campground.recommendedPlaces = [...req.body.places];
+    campground.postDate = new Date();
     await campground.save();
     req.flash('success', 'Sucessfully added a campground!')
     res.redirect(`/campgrounds/${campground.id}`);
@@ -61,7 +62,6 @@ const renderEditForm = catchAsync(async (req, res) => {
 
 const editCampground = catchAsync(async (req, res) => {
     const { id } = req.params;
-    console.log(req.body.deleteImages)
     const campground = await Campground.findByIdAndUpdate(id, { ...req.body.campground });
     const imgs = req.files.map(f => ({ url: f.path, filename: f.filename }))
     campground.images.push(...imgs);
@@ -71,6 +71,9 @@ const editCampground = catchAsync(async (req, res) => {
         }
         await campground.updateOne({ $pull: { images: { filename: { $in: req.body.deleteImages } } } })
     }
+       campground.recommendedPlaces = [...req.body.places];
+       console.log(req.body.geometry)
+       campground.geometry = req.body.geometry
     await campground.save();
     req.flash('success', 'Sucessfully updated the campground!')
     res.redirect(`/campgrounds/${campground.id}`)

@@ -9,12 +9,14 @@ import ExpressError from './utils/expressError.mjs';
 import session from 'express-session';
 import flash from 'connect-flash';
 import passport from 'passport';
-import { Strategy as LocalStrategy } from 'passport-local';
+import http from 'http';
 import User from './models/user.mjs';
+import mongoSanitize from 'express-mongo-sanitize'
+import { Strategy as LocalStrategy } from 'passport-local';
+
 import campgroundRoutes from './routes/campgrounds.mjs';
 import reviewRoutes from './routes/reviews.mjs';
 import userRoutes from './routes/users.mjs';
-import http from 'http';
 
 import { initializeSocket } from './socket.mjs';
 
@@ -63,13 +65,13 @@ const sessionConfig = {
 const server = http.createServer(app);
 initializeSocket(server);
 
-
-
-
-
-
 app.use(session(sessionConfig));
 app.use(flash());
+app.use(
+  mongoSanitize({
+    replaceWith: '_',
+  }),
+);
 
 
 app.use(passport.initialize());
@@ -82,13 +84,16 @@ passport.deserializeUser(User.deserializeUser());
 
 
 app.use((req, res, next) => {
-  // console.log(req.session);
+  console.log(req.session);
   res.locals.currentUser = req.user;
   res.locals.success = req.flash('success');
   res.locals.error = req.flash('error');
   next();
 });
 
+app.get('/home', (req, res) =>{
+  res.render('home.ejs')
+})
 
 app.use('/', userRoutes);
 app.use('/campgrounds', campgroundRoutes);

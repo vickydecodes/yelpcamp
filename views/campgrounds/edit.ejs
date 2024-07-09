@@ -1,9 +1,15 @@
 <% layout('layouts/boilerplate') -%>
+    <style>
+        #map {
+            height: 500px;
+            width: auto;
+        }
+    </style>
     <div class="row">
         <h1 class="text-center">Edit Campground</h1>
         <div class="col-6 offset-3">
-            <form action="/campgrounds/<%=campground.id %>?_method=PUT" method="post" class="mb-3  formvalid" novalidate
-                enctype="multipart/form-data">
+            <form action="/campgrounds/<%= campground.id %>/edit?_method=PUT" method="POST" class="mb-3  formvalid"
+                novalidate enctype="multipart/form-data">
                 <div>
                     <label class="form-label" for="title">Title: </label>
                     <input class="form-control" value="<%= campground.title %>" required autocomplete="off" type="text"
@@ -17,20 +23,48 @@
                 </div>
                 <br>
                 <div>
-                    <label class="form-label" for="location">Location: </label>
-                    <input class="form-control" value="<%= campground.location %>" required autocomplete="off"
-                        type="text" id="location" name="campground[location]" required>
+                    <label class="form-label" for="geometry">Coordinates: </label>
+                    <div class="input-group mb-3">
+                        <input class="form-control" value="<%= campground.geometry.coordinates[0] %>"
+                            placeholder="lattitude" required autocomplete="off" id="lat" name="geometry[coordinates]"
+                            readonly>
+                        <input class="form-control d-none" type="text" placeholder="geometry" required
+                            autocomplete="off" id="geometry" name="geometry[type]"
+                            value='<%= campground.geometry.type %>'>
+                        <input class="form-control" value="<%= campground.geometry.coordinates[1] %>"
+                            placeholder="longitude" required autocomplete="off" id="lon" name="geometry[coordinates]"
+                            readonly>
+
+
+                    </div>
                     <div class="valid-feedback">
                         Looks good!
                     </div>
                     <div class="invalid-feedback">
                         Please give a location!
                     </div>
+
                 </div>
+                <div>
+                    <label class="form-label" for="location">Location: </label>
+                    <div class="input-group mb-3">
+                        <input class="form-control" placeholder="place" required autocomplete="off" type="text"
+                            id="place" name="campground[location]" value="<%= campground.location %>" required>
+
+                    </div>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                    <div class="invalid-feedback">
+                        Please give a location!
+                    </div>
+                    <div id="map"></div>
+                </div>
+
                 <br>
                 <div>
                     <label class="form-label" for="image">Images</label>
-                    <input class="form-control" multiple  autocomplete="off" type="file" id="image" name="image">
+                    <input class="form-control" multiple autocomplete="off" type="file" id="image" name="image">
                     <div class="valid-feedback">
                         Looks good!
                     </div>
@@ -41,16 +75,17 @@
                 <br>
                 <div>
 
-                    <% campground.images.forEach((img, i) =>{%>
-                       <div class="d-flex align-items-center m-1">
-                        <img src="<%= img.thumbnail %>"   value="" class="img-thumbnail" alt="...">
-                        <div class="form-check m-2">
-                            <input class="form-check-input" type="checkbox" id="image-<%= i %>" name="deleteImages[]" value="<%= img.filename %>" >
-                            <label class="form-check-label" for="image-<%= i %>">
-                              Delete
-                            </label>
-                          </div>
-                       </div>
+                    <% campground.images.forEach((img, i)=>{%>
+                        <div class="d-flex align-items-center m-1">
+                            <img src="<%= img.thumbnail %>" value="" class="img-thumbnail" alt="...">
+                            <div class="form-check m-2">
+                                <input class="form-check-input" type="checkbox" id="image-<%= i %>"
+                                    name="deleteImages[]" value="<%= img.filename %>">
+                                <label class="form-check-label" for="image-<%= i %>">
+                                    Delete
+                                </label>
+                            </div>
+                        </div>
                         <% }); %>
 
                 </div>
@@ -67,10 +102,43 @@
                     </div>
                 </div>
                 <br>
+                <div class="input-group mb-3" required>
+                    <table class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th scope="col">No</th>
+
+                                <th scope="col">
+                                    <center>Places</center>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody id="detailsTable">
+                            <% campground.recommendedPlaces.forEach((el, index)=> {%>
+                                <tr>
+                                    <th scope="row">
+                                        <%= index + 1 %>
+                                    </th>
+
+                                    <td><input type="text" class="form-control shadow-none" value='<%= el %>'
+                                            name="places"></td>
+
+                                </tr>
+                                <% }); %>
+                        </tbody>
+                        <tr>
+
+                            <td colspan="3"><button class="btn" type="button" id="addRowButton"
+                                    style="background-color: #a3c98e;">Add Row</button></td>
+                        </tr>
+
+                    </table>
+                </div>
+                <br>
                 <div>
                     <label class="form-label" for="des">Description:</label>
                     <textarea name="campground[description]" value="" autocomplete="off" required id="des" cols="20"
-                        rows="3" class="form-control"><%= campground.description %></textarea>
+                        rows="5" class="form-control"><%= campground.description %></textarea>
                     <div class="valid-feedback">
                         Looks good!
                     </div>
@@ -79,15 +147,18 @@
                     </div>
                 </div>
                 <br>
-                <button class="btn btn-info">Update Campground</button>
+                <button class="btn btn-info" type="submit">Update Campground</button>
                 <br><br>
                 <a href="/campgrounds" class="">Back To campgrounds</a>
             </form>
 
         </div>
-    </div>
-
-
 
     </div>
-    </div>
+
+    <script>
+        const maptilerApiKey = '<%- process.env.MAPTILER_API_KEY %>'
+        const campground = <%- JSON.stringify(campground) %>
+    </script>
+    <script src="/javascripts/mapconfig2.js"></script>
+    <script src="/javascripts/addRow.js"></script>

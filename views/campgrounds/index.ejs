@@ -27,13 +27,13 @@
     <h2 class="fs-3">All Campgrounds</h2>
     <br>
     <% for (let campground of campgrounds) { %>
-      <div class="card mb-3">
+      <div class="card mb-3" id="card">
         <div class="row g-0">
           <div class="col-md-4 d-flex align-items-center">
             <img src="<%= campground.images[0].url %>" class="img-fluid rounded-start" alt="...">
           </div>
           <div class="col-md-8 d-flex">
-            <div class="card-body d-flex flex-column p-0">
+            <div class="card-body d-flex flex-column p-2">
               <div class="p-3">
                 <h5 class="card-title"> <a href="https://www.google.com/search?q=<%= campground.title %>"
                     style="text-decoration: none;">
@@ -42,12 +42,11 @@
                 <p class="card-text">
                   <%= campground.description %>
                 </p>
-              </div>
-              <div class="mt-auto">
+
                 <% if(campground.recommendedPlaces.length> 0) {%>
-                  <h4 class="fs-5 ps-3">Places to Visit in <%= campground.title %>
+                  <h4 class="fs-5 ">Places to Visit in <%= campground.title %>
                   </h4>
-                  <ul class="list-group p-3">
+                  <ul class="list-group">
                     <% for(let place of campground.recommendedPlaces) {%>
                       <li class="list-group-item">
                         <%= place %>
@@ -55,28 +54,29 @@
                       <% } %>
                   </ul>
                   <% } %>
-              </div>
 
-              <div class="card-footer mt-auto d-flex align-items-center">
-                <a class="btn btn-primary " href="campgrounds/<%= campground.id %>">View Location</a>
-                <% if(currentUser) {%>
-                  <button class="btn shadow-none ms-3 d-none" id="unlikeButton" style="color: black;border: 0px">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="black" class="bi bi-heart-fill"
-                      viewBox="0 0 16 16">
-                      <path fill-rule="evenodd" id="heartsvg"
-                        d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314" />
-                    </svg> &nbsp; <span class="totalLikesForLikes">
-                      <%= campground.likes.totalLikes %>
-                    </span></button>
-                  <button class="btn shadow-none ms-3 d-none" id="heartButton" style="color: black;border: 0px">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
-                      class="bi bi-heart" viewBox="0 0 16 16">
-                      <path
-                        d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15" />
-                    </svg>&nbsp; <span class="totalLikesForUnlikes">
-                      <%= campground.likes.totalLikes %>
-                    </span></button>
-                  <% } %>
+                    <a class="btn btn-primary mt-3" href="campgrounds/<%= campground.id %>">View <%= campground.title %>
+                    </a>
+                    <% if(currentUser) {%>
+                      <button class="btn shadow-none ms-3 mt-3 d-none" id="unlikeButton"
+                        style="color: black;border: 0px">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="black"
+                          class="bi bi-heart-fill" viewBox="0 0 16 16">
+                          <path fill-rule="evenodd" id="heartsvg"
+                            d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314" />
+                        </svg> &nbsp; <span class="totalLikesForLikes">
+                          <%= campground.likes.totalLikes %>
+                        </span></button>
+                      <button class="btn shadow-none ms-3 mt-3 d-none" id="heartButton"
+                        style="color: black;border: 0px">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
+                          class="bi bi-heart" viewBox="0 0 16 16">
+                          <path
+                            d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15" />
+                        </svg>&nbsp; <span class="totalLikesForUnlikes">
+                          <%= campground.likes.totalLikes %>
+                        </span></button>
+                      <% } %>
 
               </div>
             </div>
@@ -122,199 +122,20 @@
 
 
             <script>
-              // Initialize MapTiler SDK
-              maptilersdk.config.apiKey = 'VFBv4l3uLTmbnkv0Hqd4';
-
               const campgrounds = { features: <%- JSON.stringify(campgrounds) %> }
-
-              const maptiler = new maptilersdk.Map({
-                container: 'cluster-map',
-                style: maptilersdk.MapStyle.DATAVIZ.DARK,
-                center: [-103.59179687498357, 40.66995747013945],
-                zoom: 3,
-              });
-
-
-              maptiler.on('load', function () {
-                // Add a new source from our GeoJSON data
-                maptiler.addSource('campgrounds', {
-                  type: 'geojson',
-                  // Point to GeoJSON data (replace with your data)
-                  data: campgrounds,
-                  cluster: true,
-                  clusterMaxZoom: 14, // Max zoom to cluster points on
-                  clusterRadius: 50,
-                  // Radius of each cluster when clustering points (defaults to 50)
-                });
-
-                maptiler.addLayer({
-                  id: 'clusters',
-                  type: 'circle',
-                  source: 'campgrounds',
-                  filter: ['has', 'point_count'],
-                  paint: {
-                    // Use step expressions to implement three types of circles
-                    'circle-color': [
-                      'step',
-                      ['get', 'point_count'],
-                      '#00BCD4',
-                      10,
-                      '#2196F3',
-                      30,
-                      '#3F51B5'
-                    ],
-                    'circle-radius': [
-                      'step',
-                      ['get', 'point_count'],
-                      15,
-                      10,
-                      20,
-                      30,
-                      25
-                    ]
-                  }
-                });
-
-                maptiler.addLayer({
-                  id: 'cluster-count',
-                  type: 'symbol',
-                  source: 'campgrounds',
-                  filter: ['has', 'point_count'],
-                  layout: {
-                    'text-field': '{point_count_abbreviated}',
-                    'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
-                    'text-size': 12
-                  }
-                });
-
-                maptiler.addLayer({
-                  id: 'unclustered-point',
-                  type: 'circle',
-                  source: 'campgrounds',
-                  filter: ['!', ['has', 'point_count']],
-                  paint: {
-                    'circle-color': '#11b4da',
-                    'circle-radius': 4,
-                    'circle-stroke-width': 1,
-                    'circle-stroke-color': '#fff'
-                  }
-                });
-
-                // Inspect a cluster on click
-                maptiler.on('click', 'clusters', function (e) {
-                  const features = maptiler.queryRenderedFeatures(e.point, {
-                    layers: ['clusters']
-                  });
-                  const clusterId = features[0].properties.cluster_id;
-                  maptiler.getSource('campgrounds').getClusterExpansionZoom(
-                    clusterId,
-                    function (err, zoom) {
-                      if (err) return;
-
-                      maptiler.easeTo({
-                        center: features[0].geometry.coordinates,
-                        zoom: zoom
-                      });
-                    }
-                  );
-                });
-
-                // Open popup on click for unclustered points
-                maptiler.on('click', 'unclustered-point', function (e) {
-                  const { popUpMarkup } = e.features[0].properties;
-                  const coordinates = e.features[0].geometry.coordinates.slice();
-
-                  // Adjust coordinates for wrapping around the world
-                  while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-                    coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-                  }
-
-                  const popup = new maptilersdk.Popup();
-                  popup.setLngLat(coordinates)
-                    .setHTML(popUpMarkup)
-                    .addTo(maptiler);
-                });
-
-                maptiler.on('mouseenter', 'clusters', function () {
-                  maptiler.getCanvas().style.cursor = 'pointer';
-                });
-                maptiler.on('mouseleave', 'clusters', function () {
-                  maptiler.getCanvas().style.cursor = '';
-                });
-              });
+              const maptilerApiKey = '<%- process.env.MAPTILER_API_KEY %>';
             </script>
+
+            <script src="/javascripts/clusterMaps.js"></script>
 
             <% if(currentUser) {%>
               <script src="/socket.io/socket.io.js"></script>
+
               <script>
                 const socket = io();
                 const user = '<%= currentUser.id %>';
-                const allCampgrounds =  <%- JSON.stringify(campgrounds) %>
-                const campgroundIds = allCampgrounds.map(camp => camp.id)
-                const heartButtons = document.querySelectorAll('#heartButton');
-                const unlikeButtons = document.querySelectorAll('#unlikeButton');
-                const totalLikes1 = document.querySelectorAll('.totalLikesForLikes');
-                const totalLikes2 = document.querySelectorAll('.totalLikesForUnlikes')
-
-                console.log(heartButtons);
-                console.log(unlikeButtons);
-                console.log(totalLikes1);
-                console.log(totalLikes2)
-
-
-
-                allCampgrounds.forEach((camp, index) => {
-                  if (camp.likes.likedBy.some(user2 => user2 == user)) {
-                    unlikeButtons[index].classList.remove('d-none');
-                  } else {
-                    heartButtons[index].classList.remove('d-none')
-                  }
-                })
-
-
-
-                heartButtons.forEach((btn, index) => {
-                  btn.addEventListener('click', () => {
-                    console.log('clicked')
-                    const data = {
-                      user: user,
-                      campground: campgroundIds[index]
-                    }
-                    socket.emit('addLike', data);
-                    unlikeButtons[index].classList.remove('d-none')
-                    heartButtons[index].classList.add('d-none')
-                  });
-                })
-
-                unlikeButtons.forEach((btn, index) => {
-                  btn.addEventListener('click', () => {
-                    console.log('unliked');
-                    const data = {
-                      user: user,
-                      campground: campgroundIds[index]
-                    }
-                    socket.emit('dislike', data)
-                    heartButtons[index].classList.remove('d-none');
-                    unlikeButtons[index].classList.add('d-none')
-                  })
-                })
-
-
-
-                socket.on('likeCount', data => {
-                  const { id, likecount } = data;
-                  allCampgrounds.forEach((camp, index) => {
-                    if (camp.id == id) {
-                      totalLikes1[index].innerText = likecount;
-                      totalLikes2[index].innerText = likecount;
-                    }
-                  })
-
-                })
-
-
-
-
+                const campgroundsForMaps =  <%- JSON.stringify(campgrounds) %>
               </script>
-
+              
+              <script src="/javascripts/likefeature.js"></script>
               <% } %>
