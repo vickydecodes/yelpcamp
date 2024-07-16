@@ -3,12 +3,28 @@ const campgroundIds = allCampgrounds.map(camp => camp.id)
 const heartButtons = document.querySelectorAll('#heartButton');
 const unlikeButtons = document.querySelectorAll('#unlikeButton');
 const totalLikes1 = document.querySelectorAll('.totalLikesForLikes');
-const totalLikes2 = document.querySelectorAll('.totalLikesForUnlikes')
+const totalLikes2 = document.querySelectorAll('.totalLikesForUnlikes');
+const theme = sessionStorage.getItem('theme');
+
 
 console.log(heartButtons);
 console.log(unlikeButtons);
 console.log(totalLikes1);
-console.log(totalLikes2)
+console.log(totalLikes2);
+
+
+if(theme == 'dark'){
+    unlikeButtons.forEach(btn => {
+        btn.classList.add('dark');
+        btn.classList.remove('light')
+    });
+}else{
+    heartButtons.forEach(btn => {
+        btn.classList.add('light');
+        btn.classList.remove('dark')
+    });
+}
+
 
 
 
@@ -19,8 +35,6 @@ allCampgrounds.forEach((camp, index) => {
         heartButtons[index].classList.remove('d-none')
     }
 })
-
-
 
 heartButtons.forEach((btn, index) => {
     btn.addEventListener('click', () => {

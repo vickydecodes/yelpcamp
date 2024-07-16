@@ -20,7 +20,6 @@ const CampgroundSchema = new Schema({
     geometry: {
         type: {
             type: String,
-            required: true
         },
         coordinates:{
             type: [Number],

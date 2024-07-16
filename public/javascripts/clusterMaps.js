@@ -1,11 +1,19 @@
 maptilersdk.config.apiKey = maptilerApiKey;
 
+
+
 const map = new maptilersdk.Map({
     container: 'cluster-map',
-    style: maptilersdk.MapStyle.DATAVIZ.DARK,
     center: campgrounds.features[campgrounds.features.length - 1].geometry.coordinates,
-    zoom: 2
-});
+    zoom: 2,
+    style: maptilersdk.MapStyle.DATAVIZ.DARK
+  });
+  
+
+  
+
+
+
 
 map.on('load', function () {
     map.addSource('campgrounds', {
@@ -22,7 +30,6 @@ map.on('load', function () {
         source: 'campgrounds',
         filter: ['has', 'point_count'],
         paint: {
-
             'circle-color': [
                 'step',
                 ['get', 'point_count'],
@@ -69,7 +76,6 @@ map.on('load', function () {
         }
     });
 
-
     map.on('click', 'clusters', async (e) => {
         const features = map.queryRenderedFeatures(e.point, {
             layers: ['clusters']
@@ -81,7 +87,6 @@ map.on('load', function () {
             zoom
         });
     });
-
 
     map.on('click', 'unclustered-point', function (e) {
         const { popUpMarkup } = e.features[0].properties;
@@ -103,4 +108,10 @@ map.on('load', function () {
     map.on('mouseleave', 'clusters', () => {
         map.getCanvas().style.cursor = '';
     });
+
 });
+
+
+
+
+

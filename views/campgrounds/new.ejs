@@ -1,6 +1,6 @@
 <% layout('layouts/boilerplate') -%>
     <style>
-        #map {
+        #map2 {
             height: 500px;
             width: auto;
         }
@@ -29,8 +29,6 @@
                     <div class="input-group mb-3">
                         <input class="form-control" placeholder="lattitude" required autocomplete="off" name="geometry[coordinates]"
                           id="lat"  readonly>
-                        <input class="form-control d-none" type="text" placeholder="geometry" required
-                            autocomplete="off" id="geometry" name="geometry[type]">
                         <input class="form-control " placeholder="longitude" required autocomplete="off" name="geometry[coordinates]"
                           id="lon"  readonly>
 
@@ -57,7 +55,7 @@
                     <div class="invalid-feedback">
                         Please give a location!
                     </div>
-                    <div id="map"></div>
+                    <div id="map2"></div>
                 </div>
 
                 <br>
@@ -151,7 +149,8 @@
     </div>
     </div>
     <script>
-       const maptilerApiKey = '<%- process.env.MAPTILER_API_KEY %>'
+       const maptilerApiKey = '<%- process.env.MAPTILER_API_KEY %>';
+       const campground = false;
     </script>
     <script src="/javascripts/mapconfig.js"></script>
     <script src="/javascripts/addRow.js"></script>

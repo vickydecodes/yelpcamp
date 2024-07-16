@@ -1,7 +1,7 @@
 <% layout('layouts/boilerplate')%>
     <link rel="stylesheet" href="/stylesheets/star.css">
     <style>
-        #map {
+        #map3 {
             height: 500px;
             width: auto;
         }
@@ -88,7 +88,7 @@
             </div>
         </div>
         <div class="col-6">
-            <div id="map" class="mb-3"></div>
+            <div id="map3" class="mb-3"></div>
             <% if(campground.recommendedPlaces.length> 0) {%>
                 <h4 class="fs-5">Places to Visit in <%= campground.title %>
                 </h4>
@@ -108,12 +108,12 @@
                                 <h2 class="mb-4">
                                     Leave a Review
                                 </h2>
-                                <form action="/campgrounds/<%=campground.id %>/reviews" method="post" class="form-valid"
+                                <form action="/campgrounds/<%=campground.id %>/reviews" method="post" class="formvalid"
                                     novalidate>
                                     <div class="mb-0">
                                         <fieldset class="starability-basic">
                                             <input type="radio" id="no-rate" class="input-no-rate" name="review[rating]"
-                                                value="1" checked aria-label="No rating." />
+                                            value="1" checked aria-label="No rating." />
                                             <input type="radio" id="first-rate1" name="review[rating]" value="1" />
                                             <label for="first-rate1" title="Terrible">1 star</label>
                                             <input type="radio" id="first-rate2" name="review[rating]" value="2" />

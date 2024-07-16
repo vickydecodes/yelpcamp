@@ -34,7 +34,7 @@ export const campgroundSchema = Joi.object({
        
     }).required(),
     geometry: Joi.object({
-        type: Joi.string().required(),
+        type: Joi.string(),
         coordinates: Joi.array().items(Joi.number()).required()
     }).required(),
     places: Joi.array().items(Joi.string().escapeHTML()),

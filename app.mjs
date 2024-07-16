@@ -1,4 +1,5 @@
-import 'dotenv/config';
+import dotenv from 'dotenv';
+
 import express from 'express';
 import mongoose from 'mongoose';
 import path from 'path';
@@ -11,17 +12,21 @@ import flash from 'connect-flash';
 import passport from 'passport';
 import http from 'http';
 import User from './models/user.mjs';
-import mongoSanitize from 'express-mongo-sanitize'
+import mongoSanitize from 'express-mongo-sanitize';
+import helmet from 'helmet'
 import { Strategy as LocalStrategy } from 'passport-local';
+import MongoStore from 'connect-mongo';
 
 import campgroundRoutes from './routes/campgrounds.mjs';
 import reviewRoutes from './routes/reviews.mjs';
 import userRoutes from './routes/users.mjs';
 
+dotenv.config();
+
 import { initializeSocket } from './socket.mjs';
 
-
 const app = express();
+const dbUrl = process.env.DB_URL || 'mongodb://127.0.0.1:27017/yelpcamp'
 
 
 // Setup __dirname for ES modules
@@ -34,7 +39,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
 
 
-mongoose.connect('mongodb://127.0.0.1:27017/yelpcamp');
+mongoose.connect(dbUrl);
 
 
 const db = mongoose.connection;
@@ -48,13 +53,58 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
 
+const scriptSrcUrls = [
+  "https://stackpath.bootstrapcdn.com/",
+  "https://kit.fontawesome.com/",
+  "https://cdnjs.cloudflare.com/",
+  "https://cdn.jsdelivr.net",
+  "https://cdn.maptiler.com", // include base URL for maptiler
+];
+const styleSrcUrls = [
+  "https://kit-free.fontawesome.com/",
+  "https://stackpath.bootstrapcdn.com/",
+  "https://fonts.googleapis.com/",
+  "https://use.fontawesome.com/",
+  "https://cdn.jsdelivr.net",
+  "https://cdn.maptiler.com", // include base URL for maptiler
+];
+const connectSrcUrls = [
+  "https://api.maptiler.com/", // add this
+];
+const imagesrc = [
+  "'self'",
+  "blob:",
+  "data:",
+  "https://res.cloudinary.com/dskpugzno/",
+  "https://api.maptiler.com/",
+  'https://cdn.maptiler.com',
+    "https://cdn-icons-png.flaticon.com/",
+  'https://images.unsplash.com'
+];
+const fontSrcUrls = [
+  "https://fonts.gstatic.com"
+];
+
+const secret = process.env.SECRET || 'thisshouldbeabettersecret!';
+
+const store = new MongoStore({
+  mongoUrl: dbUrl,
+  secret,
+  touchAfter: 24 * 3600
+})
+
+store.on('error', function(e){
+  console.log('Session Store Error', e)
+})
 
 const sessionConfig = {
-  secret: 'thisshouldbeabettersecret!',
+  name: 'session',
+  secret,
   resave: false,
   saveUninitialized: true,
   cookie: {
     httpOnly: true,
+    // secure: true,
     expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
     maxAge: 1000 * 60 * 60 * 24 * 7,
   },
@@ -67,6 +117,19 @@ initializeSocket(server);
 
 app.use(session(sessionConfig));
 app.use(flash());
+app.use(helmet.contentSecurityPolicy({
+  directives: {
+    defaultSrc: ["'self'"],
+    connectSrc: ["'self'", ...connectSrcUrls],
+    scriptSrc: ["'self'", "'unsafe-inline'", ...scriptSrcUrls],
+    styleSrc: ["'self'", "'unsafe-inline'", ...styleSrcUrls],
+    workerSrc: ["'self'", "blob:"],
+    objectSrc: ["'none'"],
+    imgSrc: ["'self'", ...imagesrc],
+    fontSrc: ["'self'", ...fontSrcUrls],
+  }
+}));
+
 app.use(
   mongoSanitize({
     replaceWith: '_',
@@ -91,7 +154,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get('/home', (req, res) =>{
+app.get('/home', (req, res) => {
   res.render('home.ejs')
 })
 
@@ -112,6 +175,6 @@ app.use((err, req, res, next) => {
 });
 
 
-server.listen(3000, () => {
+server.listen(process.env.PORT || 3000, () => {
   console.log('LISTENING ON PORT 3000');
 });

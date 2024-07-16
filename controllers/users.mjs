@@ -1,6 +1,7 @@
 import User from '../models/user.mjs';
 import catchAsync from '../utils/catchAsync.mjs';
 import Campground from '../models/campground.mjs';
+import { cloudinary } from '../cloudinary/main.mjs';
 
 const renderRegisterForm = (req, res) => {
     res.render('../views/users/register')
@@ -46,21 +47,19 @@ const logoutUser = (req, res, next) => {
 const renderProfilePage = catchAsync(async (req, res) => {
     const user = await User.findById(req.user._id);
     const campgrounds = await Campground.find({ author: user })
-    res.render('campgrounds/profile', { user,  campgrounds })
+    res.render('campgrounds/profile', { user, campgrounds })
 })
 
+
 const updateProfile = catchAsync(async (req, res) => {
-    const { user, address } = req.body
-    const updateduser = await User.findByIdAndUpdate(req.user._id, {
-        name: user.name,
-        profile: user.profile,
-        mobile: user.mobile,
-    },
-        { new: true }
-    );
+    const user = await User.findByIdAndUpdate(req.user._id, { ...req.body.user });
+    user.profile = {
+         url: req.file.path,
+         filename: req.file.filename
+    }
+    await user.save();
     req.flash('Updated successfully')
-    console.log(req.body)
-    req.session.user = updateduser;
+    req.session.user = user;
     res.redirect('/profile')
 })
 

@@ -5,26 +5,27 @@
 
 <div class="container">
     <center>
-        <img src="<%= user.profile %>" style="border-radius: 50%; object-fit: cover;" height="250" width="250" alt="">
+        <img src="<%= user.profile.url %>" style="border-radius: 50%; object-fit: cover;" height="250" width="250" alt="">
       </center>
     <br>
 
-            <form action="/profile?_method=PUT" class="row g-3" method="POST">
+            <form action="/profile?_method=PUT" class="row g-3 formvalid" method="POST" novalidate enctype="multipart/form-data">
                 <div class="card mb-3">
                     <div class="card-body">
                         <div class="col-12">
                             <label for="inputEmail4" class="form-label">Name</label>
                             <input type="text" name="user[name]" class="form-control" 
-                                value="<%= user.name %>">
+                                value="<%= user.name %>" required>
                         </div><br>
                         <div class="col-12">
                             <label for="inputAddress" class="form-label">Profile Picture</label>
-                            <input type="text" name="user[profile]" class="form-control" value="<%= user.profile %>">
-                        </div><br>
+                            <input class="form-control" required autocomplete="off" type="file" id="image" name="avatar">
+                          </div>
+                        <br>
                         <div class="col-12">
                             <label for="inputAddress" class="form-label">Mobile Number</label>
-                            <input type="text" name="customer[mobile]" class="form-control" 
-                                value="<%= user.mobile %>">
+                            <input type="text" name="user[mobile]" class="form-control" 
+                                value="<%= user.mobile %>" required>
                         </div><br>
                         <div class="col-12">
                             <button type="submit" class="btn btn-primary">Update</button>
@@ -34,7 +35,9 @@
             </form>
         </div>
     </div>
-    <h3>Your Campgrounds</h3>
+<% if(campgrounds.length > 0) {%>
+  <h3>Your Campgrounds</h3>
+  <% } %>
     <div class="p-2">
         <% for (let campground of campgrounds) { %>
             <div class="card mb-3">

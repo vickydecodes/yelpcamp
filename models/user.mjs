@@ -2,6 +2,16 @@ import mongoose from 'mongoose';
 import passportLocalMongoose from 'passport-local-mongoose'
 const {Schema } = mongoose
 
+
+const imageSchema = new Schema({
+    url: String,
+    filename: String
+});
+
+imageSchema.virtual('thumbnail').get(function () {
+    return this.url.replace('/upload', '/upload/w_200');
+});
+
 const UserSchema = new Schema ({
     email:{
         type: String,
@@ -13,8 +23,8 @@ const UserSchema = new Schema ({
         ref: 'Campground'
     }],
     profile:{
-        type: String,
-        default: 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png'
+        type:imageSchema,
+        default: () => ({})
     },
     mobile:{
         type: Number,

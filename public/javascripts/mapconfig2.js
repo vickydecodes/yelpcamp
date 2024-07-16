@@ -4,14 +4,18 @@ const place = document.querySelector('#place');
 const lat = document.querySelector('#lat');
 const lon = document.querySelector('#lon');
 const geometryinput = document.querySelector('#geometry');
+const theme = sessionStorage.getItem('theme');
 
-const map = new maptilersdk.Map({
-    container: 'map',
-    style: maptilersdk.MapStyle.DATAVIZ.DARK,
-    center: [campground.geometry.coordinates[0], campground.geometry.coordinates[1]],
-    zoom: 9,
-    hash: true,
-});
+
+
+    const map = new maptilersdk.Map({
+        container: 'map2',
+        style: maptilersdk.MapStyle.DATAVIZ.LIGHT,
+        center: [16.62662018, 49.2125578],
+        zoom: 14,
+        hash: true,
+    });
+
 
 let marker = new maptilersdk.Marker()
     .setLngLat([campground.geometry.coordinates[0], campground.geometry.coordinates[1]])

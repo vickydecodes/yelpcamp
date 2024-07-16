@@ -2,6 +2,11 @@ import catchAsync from '../utils/catchAsync.mjs';
 import Campground from '../models/campground.mjs';
 import { cloudinary } from '../cloudinary/main.mjs';
 import User from '../models/user.mjs';
+import * as maptilerClient from '@maptiler/client';
+
+
+
+maptilerClient.config.apiKey = process.env.MAPTILER_API_KEY
 
 
 
@@ -23,7 +28,9 @@ const searchCampgrounds = catchAsync(async (req, res) => {
 
 const createNewCampground = catchAsync(async (req, res) => {
     const campground = new Campground(req.body.campground);
-    campground.geometry = JSON.parse(req.body.geometry);
+    const geoData = await maptilerClient.geocoding.forward(req.body.campground.location, { limit: 1 });
+    console.log(geoData)
+    campground.geometry = geoData.features[0].geometry;
     campground.images = req.files.map(f => ({ url: f.path, filename: f.filename }))
     campground.author = req.user._id;
     campground.recommendedPlaces = [...req.body.places];
@@ -32,6 +39,7 @@ const createNewCampground = catchAsync(async (req, res) => {
     req.flash('success', 'Sucessfully added a campground!')
     res.redirect(`/campgrounds/${campground.id}`);
     // res.send(campground)
+    // res.send('hiii this is create campground module')
 })
 
 const showCampground = catchAsync(async (req, res) => {
@@ -71,9 +79,9 @@ const editCampground = catchAsync(async (req, res) => {
         }
         await campground.updateOne({ $pull: { images: { filename: { $in: req.body.deleteImages } } } })
     }
-       campground.recommendedPlaces = [...req.body.places];
-       console.log(req.body.geometry)
-       campground.geometry = req.body.geometry
+    campground.recommendedPlaces = [...req.body.places];
+    const geoData = await maptilerClient.geocoding.forward(req.body.campground.location, { limit: 1 });
+    campground.geometry = geoData.features[0].geometry;
     await campground.save();
     req.flash('success', 'Sucessfully updated the campground!')
     res.redirect(`/campgrounds/${campground.id}`)

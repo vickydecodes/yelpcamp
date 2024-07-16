@@ -3,15 +3,19 @@ maptilersdk.config.apiKey = maptilerApiKey;
 const place = document.querySelector('#place');
 const lat = document.querySelector('#lat');
 const lon = document.querySelector('#lon');
-const geometryinput = document.querySelector('#geometry')
+const theme = sessionStorage.getItem('theme');
+
 
 const map = new maptilersdk.Map({
-    container: 'map',
-    style: maptilersdk.MapStyle.DATAVIZ.DARK,
+    container: 'map2',
+    style: maptilersdk.MapStyle.DATAVIZ.DARK ,
     center: [16.62662018, 49.2125578],
     zoom: 14,
     hash: true,
 });
+
+
+
 
 const geocodingControl = new maptilersdkMaptilerGeocoder.GeocodingControl({});
 
@@ -43,11 +47,7 @@ geocodingControl.addEventListener('response', (data) => {
     lat.value = geometry.coordinates[0];
     lon.value = geometry.coordinates[1];
     geometry.coordinates[1] = LattitudeLongitude[1]
-    geometry.coordinates[0] = LattitudeLongitude[0]
-    geometryinput.value = geometry.type
-
-    console.log("Coordinates:", coordinates);
-    console.log("Formatted Address:", formattedAddress);
+    geometry.coordinates[0] = LattitudeLongitude[0];
 
     place.value = formattedAddress;
     map.setCenter(coordinates);

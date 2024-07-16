@@ -5,7 +5,18 @@
       height: 500px;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     }
+
+    .light{
+      color: 'black'
+    }
+
+    .dark{
+      color: 'white'
+    }
+
   </style>
+
+
   <% if(campgrounds.length> 0) {%>
     <center>
 
@@ -19,7 +30,7 @@
         <h4 class="fs-5">
           Search any campground</h4>
       </label>
-      <input type="text" name="searchTerm" class="form-control">
+      <input type="text" name="searchTerm" id="search" class="form-control">
       <button class="btn btn-success btn-sm p-2 mt-1">Search</button>
     </form>
 
@@ -58,17 +69,17 @@
                     <a class="btn btn-primary mt-3" href="campgrounds/<%= campground.id %>">View <%= campground.title %>
                     </a>
                     <% if(currentUser) {%>
-                      <button class="btn shadow-none ms-3 mt-3 d-none" id="unlikeButton"
-                        style="color: black;border: 0px">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="black"
+                      <button class="btn shadow-none ms-3 mt-3 d-none light" id="unlikeButton"
+                        style="border: 0px">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
                           class="bi bi-heart-fill" viewBox="0 0 16 16">
                           <path fill-rule="evenodd" id="heartsvg"
                             d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314" />
                         </svg> &nbsp; <span class="totalLikesForLikes">
                           <%= campground.likes.totalLikes %>
                         </span></button>
-                      <button class="btn shadow-none ms-3 mt-3 d-none" id="heartButton"
-                        style="color: black;border: 0px">
+                      <button class="btn shadow-none ms-3 mt-3 d-none light" id="heartButton"
+                        style="border: 0px">
                         <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
                           class="bi bi-heart" viewBox="0 0 16 16">
                           <path

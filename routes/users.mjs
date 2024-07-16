@@ -1,9 +1,12 @@
 import express from 'express';
 import passport from 'passport'
 import storeReturnTo from '../utils/storeInfo.mjs';
-import users from '../controllers/users.mjs'
+import users from '../controllers/users.mjs';
+import multer from 'multer';
+import { storage } from '../cloudinary/main.mjs';
 
 const router = express.Router();
+const upload = multer({ storage });
 
 
 router.route('/register')
@@ -18,7 +21,7 @@ router.get('/logout', users.logoutUser)
 
 router.route('/profile')
     .get(users.renderProfilePage)
-    .put(users.updateProfile)
+    .put(upload.single('avatar'),users.updateProfile)
 
 
 router.route('/bookmarks')
