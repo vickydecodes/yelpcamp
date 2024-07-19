@@ -15,7 +15,7 @@ import User from './models/user.mjs';
 import mongoSanitize from 'express-mongo-sanitize';
 import helmet from 'helmet'
 import { Strategy as LocalStrategy } from 'passport-local';
-import connectmongo from 'connect-mongo';
+import MongoStore from 'connect-mongo';
 
 import campgroundRoutes from './routes/campgrounds.mjs';
 import reviewRoutes from './routes/reviews.mjs';
@@ -29,7 +29,6 @@ const app = express();
 const dbUrl = process.env.DB_URL || 'mongodb://127.0.0.1:27017/yelpcamp'
 
 
-// Setup __dirname for ES modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -40,7 +39,6 @@ app.use(methodOverride('_method'));
 
 
 mongoose.connect(dbUrl);
-
 
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'CONNECTION FAILED!'));
@@ -87,13 +85,13 @@ const fontSrcUrls = [
 
 const secret = process.env.SECRET || 'thisshouldbeabettersecret!';
 
-const MongoStore = connectmongo(session)
 
-const store = new MongoStore({
+
+const store =  MongoStore.create({
   mongoUrl: dbUrl,
   secret,
   touchAfter: 24 * 3600
-})
+});
 
 store.on('error', function(e){
   console.log('Session Store Error', e)
