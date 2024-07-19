@@ -10,7 +10,7 @@ const theme = sessionStorage.getItem('theme');
 
     const map = new maptilersdk.Map({
         container: 'map2',
-        style: maptilersdk.MapStyle.DATAVIZ.LIGHT,
+        style: maptilersdk.MapStyle.DATAVIZ.DARK,
         center: [16.62662018, 49.2125578],
         zoom: 14,
         hash: true,

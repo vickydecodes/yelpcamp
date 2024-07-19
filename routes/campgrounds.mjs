@@ -23,7 +23,7 @@ router.route('/new')
     .post(isLoggedIn,upload.array('image'), validateCampground, campgrounds.createNewCampground); ////
 
 
-router.post('/:id/favourites', isLoggedIn, campgrounds.addToFavourites);
+router.post('/:id/bookmarks', isLoggedIn, campgrounds.addToBookmarks);
 
 
 router.route('/search')

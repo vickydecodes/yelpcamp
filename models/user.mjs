@@ -37,7 +37,6 @@ const UserSchema = new Schema ({
     },
     name:{
         type:String,
-        default: 'Anonymous'
     }
 })
 

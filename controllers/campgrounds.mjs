@@ -16,54 +16,69 @@ const renderNewForm = (req, res) => {
 }
 
 const searchCampgrounds = catchAsync(async (req, res) => {
-    const { searchTerm } = req.query;
-    const search = searchTerm.toLowerCase().trim().split(' ').join('')
-    const campgrounds = await Campground.find({ searchTerm: { $regex: search } });
-    res.render('./campgrounds/index', { campgrounds })
+    try {
+        const { searchTerm } = req.query;
+        const search = searchTerm.toLowerCase().trim().split(' ').join('')
+        const campgrounds = await Campground.find({ searchTerm: { $regex: search } });
+        res.render('./campgrounds/index', { campgrounds })
+    } catch (e) {
+        console.log(e)
+    }
 })
 
 const createNewCampground = catchAsync(async (req, res) => {
-    const campground = new Campground(req.body.campground);
-    const geoData = await maptilerClient.geocoding.forward(req.body.campground.location, { limit: 1 });
-    console.log(geoData)
-    campground.geometry = geoData.features[0].geometry;
-    campground.images = req.files.map(f => ({ url: f.path, filename: f.filename }))
-    campground.author = req.user._id;
-    campground.recommendedPlaces = [...req.body.places];
-    campground.postDate = new Date();
-    await campground.save();
-    req.flash('success', 'Sucessfully added a campground!')
-    res.redirect(`/campgrounds/${campground.id}`);
+    try {
+        const campground = new Campground(req.body.campground);
+        const geoData = await maptilerClient.geocoding.forward(req.body.campground.location, { limit: 1 });
+        console.log(geoData)
+        campground.geometry = geoData.features[0].geometry;
+        campground.images = req.files.map(f => ({ url: f.path, filename: f.filename }))
+        campground.author = req.user._id;
+        campground.recommendedPlaces = [...req.body.places];
+        campground.postDate = new Date();
+        await campground.save();
+        req.flash('success', 'Sucessfully added a campground!')
+        res.redirect(`/campgrounds/${campground.id}`);
+    } catch (e) {
+        console.log(e)
+    }
 })
 
 const showCampground = catchAsync(async (req, res) => {
-    const campground = await Campground.findById(req.params.id).populate({
-        path: 'reviews',
-        populate: {
-            path: 'author'
-        }
-    }).populate('author');
+    try {
+        const campground = await Campground.findById(req.params.id).populate({
+            path: 'reviews',
+            populate: {
+                path: 'author'
+            }
+        }).populate('author');
 
-    if (!campground) {
-        req.flash('error', 'There is no such campground!')
-        return res.redirect('/campgrounds')
+        if (!campground) {
+            req.flash('error', 'There is no such campground!')
+            return res.redirect('/campgrounds')
+        }
+        res.render('campgrounds/show', { campground });
+    } catch (e) {
+        console.log(e)
     }
-    res.render('campgrounds/show', { campground });
 })
 
 const renderEditForm = catchAsync(async (req, res) => {
-    const { id } = req.params;
-    const campground = await Campground.findById(id);
-    if (!campground) {
-        req.flash('error', 'Cannot find that campground!')
-        return res.redirect('/campgrounds')
+    try {
+        const { id } = req.params;
+        const campground = await Campground.findById(id);
+        if (!campground) {
+            req.flash('error', 'Cannot find that campground!')
+            return res.redirect('/campgrounds')
+        }
+        res.render('campgrounds/edit', { campground })
+    } catch (e) {
+        console.log(e)
     }
-    res.render('campgrounds/edit', { campground })
-
 })
 
 const editCampground = catchAsync(async (req, res) => {
-    try{
+    try {
         const { id } = req.params;
         const campground = await Campground.findByIdAndUpdate(id, { ...req.body.campground });
         const imgs = req.files.map(f => ({ url: f.path, filename: f.filename }))
@@ -80,33 +95,41 @@ const editCampground = catchAsync(async (req, res) => {
         await campground.save();
         req.flash('success', 'Sucessfully updated the campground!')
         res.redirect(`/campgrounds/${campground.id}`)
-    }catch(e){
+    } catch (e) {
         console.log(e)
     }
-    
+
 })
 
 const deleteCampground = async (req, res) => {
-    const { id } = req.params;
-    await Campground.findByIdAndDelete(id);
-    req.flash('error', 'Sucessfully deleted the campground!')
-    res.redirect('/campgrounds')
+    try {
+        const { id } = req.params;
+        await Campground.findByIdAndDelete(id);
+        req.flash('error', 'Sucessfully deleted the campground!')
+        res.redirect('/campgrounds')
+    } catch (e) {
+        console.log(e)
+    }
 }
 
-const addToFavourites = catchAsync(async (req, res) => {
-    const { id } = req.params;
-    const campground = await Campground.findById(id);
-    const user = await User.findById(req.user._id).populate('bookmarks');
-    const isCampgroundinBookmarks = user.bookmarks.some(mark => mark.id === campground.id);
-    if (isCampgroundinBookmarks) {
-        req.flash('error', 'The campground is already added to your Bookmarks!');
-    } else {
-        await user.bookmarks.unshift(campground);
-        await user.save();
-        req.session.user = user;
-        req.flash('success', 'Successfully added the campground to your bookmarks!');
+const addToBookmarks = catchAsync(async (req, res) => {
+    try {
+        const { id } = req.params;
+        const campground = await Campground.findById(id);
+        const user = await User.findById(req.user._id).populate('bookmarks');
+        const isCampgroundinBookmarks = user.bookmarks.some(mark => mark.id === campground.id);
+        if (isCampgroundinBookmarks) {
+            req.flash('error', 'The campground is already added to your Bookmarks!');
+        } else {
+            await user.bookmarks.unshift(campground);
+            await user.save();
+            req.session.user = user;
+            req.flash('success', 'Successfully added the campground to your bookmarks!');
+        }
+        res.redirect('/bookmarks')
+    } catch (e) {
+        console.log(e)
     }
-    res.redirect('/campgrounds')
 })
 
 
@@ -119,7 +142,7 @@ const campgrounds = {
     editCampground,
     deleteCampground,
     searchCampgrounds,
-    addToFavourites,
+    addToBookmarks
 };
 
 export default campgrounds

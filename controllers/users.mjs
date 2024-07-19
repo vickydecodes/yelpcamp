@@ -10,7 +10,7 @@ const renderRegisterForm = (req, res) => {
 const registerUser = catchAsync(async (req, res) => {
     try {
         const { email, username, password } = (req.body.user);
-        const user = new User({ email, username });
+        const user = new User({ email, username, name: username });
         const registeredUser = await User.register(user, password);
         req.login(registeredUser, err => {
             if (err) return next(err);
