@@ -4,8 +4,14 @@ const {Schema } = mongoose
 
 
 const imageSchema = new Schema({
-    url: String,
-    filename: String
+    url: {
+        type: String,
+        default: 'https://i.sstatic.net/l60Hf.png'
+    },
+
+    filename: {
+        type: String
+    }
 });
 
 imageSchema.virtual('thumbnail').get(function () {
