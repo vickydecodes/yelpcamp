@@ -77,7 +77,8 @@ const imagesrc = [
   "https://api.maptiler.com/",
   'https://cdn.maptiler.com',
     "https://cdn-icons-png.flaticon.com/",
-  'https://images.unsplash.com'
+  'https://images.unsplash.com',
+  'https://static-00.iconduck.com/assets.00/404-page-not-found-illustration-2048x998-yjzeuy4v.png',
 ];
 const fontSrcUrls = [
   "https://fonts.gstatic.com"
