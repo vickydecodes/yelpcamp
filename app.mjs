@@ -21,9 +21,9 @@ import campgroundRoutes from './routes/campgrounds.mjs';
 import reviewRoutes from './routes/reviews.mjs';
 import userRoutes from './routes/users.mjs';
 
-dotenv.config();
-
 import { initializeSocket } from './socket.mjs';
+
+dotenv.config();
 
 const app = express();
 const dbUrl = process.env.DB_URL || 'mongodb://127.0.0.1:27017/yelpcamp'
@@ -171,8 +171,19 @@ app.all('*', (req, res, next) => {
 
 
 app.use((err, req, res, next) => {
+  // Ensure `err` is an object
+  if (typeof err !== 'object' || err === null) {
+    err = new Error('Something Went Wrong');
+    err.statusCode = 500;
+  }
+  
+  // Destructure statusCode from `err` with a default value
   const { statusCode = 500 } = err;
+  
+  // Ensure `message` is defined
   if (!err.message) err.message = 'Something Went Wrong';
+  
+  // Render the error page with the error object
   res.status(statusCode).render('error', { err });
 });
 

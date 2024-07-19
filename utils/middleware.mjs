@@ -15,6 +15,7 @@ export const isLoggedIn = (req, res, next) =>{
 }
 
 export const validateCampground = (req, res, next) => {
+    console.log(req.body)
     const { error } = campgroundSchema.validate(req.body);
     if (error) {
         const msg = error.details.map(el => el.message).join(',');

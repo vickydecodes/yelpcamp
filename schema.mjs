@@ -31,14 +31,13 @@ export const campgroundSchema = Joi.object({
         price: Joi.number().required().min(0),
         description: Joi.string().required(),
         location: Joi.string().required(),
-       
     }).required(),
     geometry: Joi.object({
         type: Joi.string(),
         coordinates: Joi.array().items(Joi.number()).required()
     }).required(),
     places: Joi.array().items(Joi.string().escapeHTML()),
-    deleteImages: Joi.array().items(Joi.string())
+    deleteImages: Joi.array()
 });
 
 export const reviewSchema = Joi.object({

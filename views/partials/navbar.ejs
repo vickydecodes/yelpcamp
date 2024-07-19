@@ -10,18 +10,17 @@
 <nav class="navbar navbar-expand-lg sticky-top"
   style="background-color: rgba(255,255,255, 0.10);-webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);">
   <div class="container-fluid row p-2">
-    <div class="col-3 d-flex justify-content-end">
-      <a class="navbar-brand " href="#">Yelpcamp</a>
-     
-    </div>
-    <div class="col-3 d-flex justify-content-end"> <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
+    <div class="col-sm-12 col-md-12 col-lg-6 d-flex justify-content-center">
+      <a class="navbar-brand ms-3" href="#">Yelpcamp</a> 
+      <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
       aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     </div>
-    <div class="collapse navbar-collapse col-6
+  
+    <div class="collapse navbar-collapse col-md-6 
     " id="navbarNavDropdown">
-      <ul class="navbar-nav">
+      <ul class="navbar-nav ms-3">
         <li class="nav-item">
           <a class="nav-link"  aria-current="page" href="/">Home</a>
         </li>
@@ -52,13 +51,16 @@
            
       </ul>
       <div class="ms-auto">
-        <ul class="navbar-nav">
+        <ul class="navbar-nav ms-3">
         <% if(currentUser) {%>
-          <li class="nav-item">
+          <li class="nav-item mt-1">
           <a href="/logout" class="nav-link">Logout</a>
           </a>
           </li>
-          <li class="nav-item">
+          <li class="nav-item d-lg-none  d-sm-block">
+            <a href="/profile" class="nav-link">Profile</a>
+          </li>
+          <li class="nav-item d-lg-block d-none">
             <div class="mx-1">
               <a href="/profile"> <img src="<%= currentUser.profile.url %>" width="50px" height="50px"
                   style="border-radius: 100%; object-fit: cover;" class="me-3" class="m-1" alt=""></a>

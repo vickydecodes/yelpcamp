@@ -2,15 +2,11 @@ maptilersdk.config.apiKey = maptilerApiKey;
 console.log(campground)
 const theme = sessionStorage.getItem('theme');
 
-
-
-
-
     const map = new maptilersdk.Map({
         container: 'map3',
         style: maptilersdk.MapStyle.DATAVIZ.DARK,
-        center: [16.62662018, 49.2125578],
-        zoom: 14,
+        center: campground.geometry.coordinates,
+        zoom: 9,
         hash: true,
     });
 

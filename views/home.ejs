@@ -16,6 +16,25 @@
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
 <link rel="icon" type="image/x-icon" href="https://cdn-icons-png.flaticon.com/512/44/44386.png">
 <link rel="stylesheet" href="/stylesheets/home.css">
+<style>
+  @media (max-width: 600px) {
+      body {
+          font-size: 14px;
+      }
+  
+      h1 {
+          font-size: 1.75em; /* 24.5px */
+      }
+  
+      h2 {
+          font-size: 1.5em; /* 21px */
+      }
+  
+      p {
+          font-size: 0.875em; /* 12.25px */
+      }
+  }
+  </style>
 </head>
 
 <body class="100vh position-relative">
@@ -23,7 +42,7 @@
     style="background-color: rgba(255, 255, 255, 0.10);-webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);">
     <div class="container-fluid row p-2">
       <div class="col-md-4 d-flex justify-content-end">
-        <a class="navbar-brand " href="#">Yelpcamp</a>
+        <a class="navbar-brand ms-3" href="#">Yelpcamp</a>
         <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse"
           data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false"
           aria-label="Toggle navigation">
@@ -34,7 +53,7 @@
       </div>
 
       <div class="collapse navbar-collapse col-4" id="navbarNavDropdown">
-        <ul class="navbar-nav">
+        <ul class="navbar-nav ms-3">
           <li class="nav-item">
             <a class="nav-link" aria-current="page" href="/home">Home</a>
           </li>

@@ -4,11 +4,7 @@ import { cloudinary } from '../cloudinary/main.mjs';
 import User from '../models/user.mjs';
 import * as maptilerClient from '@maptiler/client';
 
-
-
 maptilerClient.config.apiKey = process.env.MAPTILER_API_KEY
-
-
 
 const renderIndex = catchAsync(async (req, res) => {
     const campgrounds = await Campground.find({});
@@ -38,8 +34,6 @@ const createNewCampground = catchAsync(async (req, res) => {
     await campground.save();
     req.flash('success', 'Sucessfully added a campground!')
     res.redirect(`/campgrounds/${campground.id}`);
-    // res.send(campground)
-    // res.send('hiii this is create campground module')
 })
 
 const showCampground = catchAsync(async (req, res) => {

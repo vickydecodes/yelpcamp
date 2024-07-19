@@ -6,7 +6,6 @@ const {Schema } = mongoose
 const imageSchema = new Schema({
     url: {
         type: String,
-        default: 'https://res.cloudinary.com/dskpugzno/image/upload/v1721366168/Yelpcamp/gngp9gyi6monvbo0fy8t.pngYelpcamp/gngp9gyi6monvbo0fy8t'
     },
 
     filename: {
