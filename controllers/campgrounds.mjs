@@ -63,22 +63,27 @@ const renderEditForm = catchAsync(async (req, res) => {
 })
 
 const editCampground = catchAsync(async (req, res) => {
-    const { id } = req.params;
-    const campground = await Campground.findByIdAndUpdate(id, { ...req.body.campground });
-    const imgs = req.files.map(f => ({ url: f.path, filename: f.filename }))
-    campground.images.push(...imgs);
-    if (req.body.deleteImages) {
-        for (let filename of req.body.deleteImages) {
-            await cloudinary.uploader.destroy(filename)
+    try{
+        const { id } = req.params;
+        const campground = await Campground.findByIdAndUpdate(id, { ...req.body.campground });
+        const imgs = req.files.map(f => ({ url: f.path, filename: f.filename }))
+        campground.images.push(...imgs);
+        if (req.body.deleteImages) {
+            for (let filename of req.body.deleteImages) {
+                await cloudinary.uploader.destroy(filename)
+            }
+            await campground.updateOne({ $pull: { images: { filename: { $in: req.body.deleteImages } } } })
         }
-        await campground.updateOne({ $pull: { images: { filename: { $in: req.body.deleteImages } } } })
+        campground.recommendedPlaces = [...req.body.places];
+        const geoData = await maptilerClient.geocoding.forward(req.body.campground.location, { limit: 1 });
+        campground.geometry = geoData.features[0].geometry;
+        await campground.save();
+        req.flash('success', 'Sucessfully updated the campground!')
+        res.redirect(`/campgrounds/${campground.id}`)
+    }catch(e){
+        console.log(e)
     }
-    campground.recommendedPlaces = [...req.body.places];
-    const geoData = await maptilerClient.geocoding.forward(req.body.campground.location, { limit: 1 });
-    campground.geometry = geoData.features[0].geometry;
-    await campground.save();
-    req.flash('success', 'Sucessfully updated the campground!')
-    res.redirect(`/campgrounds/${campground.id}`)
+    
 })
 
 const deleteCampground = async (req, res) => {
