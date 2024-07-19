@@ -149,11 +149,11 @@
 
                                             <h4>
                                                 <span>
-                                                    <img src="<%= review.author.profile %>"
+                                                    <img src="<%= review.author.profile.url %>"
                                                         style="border-radius: 100%; object-fit: cover; width: 50px; height: 50px"
                                                         class="img-thumbnail" alt="">
                                                 </span>
-                                                <%= (review.author.equals(currentUser)) ? 'You' : review.author.username
+                                                <%= (review.author.equals(currentUser)) ? 'You' : review.author.name
                                                     %>
                                             </h4>
 
