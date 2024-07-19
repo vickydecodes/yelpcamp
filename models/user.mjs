@@ -6,7 +6,7 @@ const {Schema } = mongoose
 const imageSchema = new Schema({
     url: {
         type: String,
-        default: 'https://i.sstatic.net/l60Hf.png'
+        default: 'https://t3.ftcdn.net/jpg/03/64/62/36/360_F_364623623_ERzQYfO4HHHyawYkJ16tREsizLyvcaeg.jpg'
     },
 
     filename: {
