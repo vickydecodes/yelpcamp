@@ -4,16 +4,10 @@ maptilersdk.config.apiKey = maptilerApiKey;
 
 const map = new maptilersdk.Map({
     container: 'cluster-map',
-    center: campgrounds.features[campgrounds.features.length - 1].geometry.coordinates,
+    center: (campgrounds.features.length > 0)? campgrounds.features[campgrounds.features.length - 1].geometry.coordinates: [0,0],
     zoom: 2,
     style: maptilersdk.MapStyle.DATAVIZ.DARK
   });
-  
-
-  
-
-
-
 
 map.on('load', function () {
     map.addSource('campgrounds', {

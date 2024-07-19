@@ -79,7 +79,6 @@ const imagesrc = [
     "https://cdn-icons-png.flaticon.com/",
   'https://images.unsplash.com',
   'https://static-00.iconduck.com/assets.00/404-page-not-found-illustration-2048x998-yjzeuy4v.png',
-  'https://t3.ftcdn.net/jpg/03/64/62/36/360_F_364623623_ERzQYfO4HHHyawYkJ16tREsizLyvcaeg.jpg'
 ];
 const fontSrcUrls = [
   "https://fonts.gstatic.com"
@@ -157,7 +156,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get('/home', (req, res) => {
+app.get('/', (req, res) => {
   res.render('home.ejs')
 })
 

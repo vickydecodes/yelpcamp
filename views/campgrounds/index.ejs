@@ -137,8 +137,10 @@
               const maptilerApiKey = '<%- process.env.MAPTILER_API_KEY %>';
             </script>
 
-            <script src="/javascripts/clusterMaps.js"></script>
+<% if(campgrounds.length > 0) {%>
+  <script src="/javascripts/clusterMaps.js"></script>
 
+  <% } %>
             <% if(currentUser) {%>
               <script src="/socket.io/socket.io.js"></script>
 
