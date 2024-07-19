@@ -15,7 +15,7 @@ import User from './models/user.mjs';
 import mongoSanitize from 'express-mongo-sanitize';
 import helmet from 'helmet'
 import { Strategy as LocalStrategy } from 'passport-local';
-import MongoStore from 'connect-mongo';
+import connectmongo from 'connect-mongo';
 
 import campgroundRoutes from './routes/campgrounds.mjs';
 import reviewRoutes from './routes/reviews.mjs';
@@ -86,6 +86,8 @@ const fontSrcUrls = [
 ];
 
 const secret = process.env.SECRET || 'thisshouldbeabettersecret!';
+
+const MongoStore = connectmongo(session)
 
 const store = new MongoStore({
   mongoUrl: dbUrl,
