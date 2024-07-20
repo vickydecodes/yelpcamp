@@ -37,10 +37,9 @@ const createNewCampground = catchAsync(async (req, res) => {
         campground.author = req.user._id;
         campground.recommendedPlaces = [...req.body.places];
         campground.postDate = new Date();
-        res.send(campground)
-        // await campground.save();
-        // req.flash('success', 'Sucessfully added a campground!')
-        // res.redirect(`/campgrounds/${campground.id}`);
+        await campground.save();
+        req.flash('success', 'Sucessfully added a campground!')
+        res.redirect(`/campgrounds/${campground.id}`);
         console.log(campground)
     } catch (e) {
         console.log(e)
