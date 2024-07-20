@@ -5,9 +5,11 @@
             height: 500px;
             width: auto;
         }
-    </style>
+</style>
 
-    <div class="row">
+    <div class="row position-relative">
+
+      
         <div class="col-md-6 ">
             <div class="card mb-3">
                 <div id="campgroundcarousel" class="carousel slide">
@@ -48,10 +50,12 @@
                     </li>
                     <li class="list-group-item">$<%= campground.price%>/night</li>
                     <li class="list-group-item text-muted d-flex">
-                        <form action="/campgrounds/<%=campground.id %>/bookmarks" method="post">
-                            <button class="btn me-2" style="background-color: #fdabd4; color: white" type="submit">Add
-                                to Bookmarks</button>
-                        </form>
+                        <% if(!campground.author.equals(currentUser)) {%>
+                            <form action="/campgrounds/<%=campground.id %>/bookmarks" method="post">
+                                <button class="btn me-2" style="background-color: #fdabd4; color: white" type="submit">Add
+                                    to Bookmarks</button>
+                            </form>
+                            <% } %>
                         <a href="https://en.wikipedia.org/wiki/<%= campground.searchTerm.split(',')[0] %>"
                             class="btn btn-info">Search in wikipedia</a>
                     </li>
@@ -59,25 +63,30 @@
                 <% if(currentUser && campground.author.equals(currentUser._id)) {%>
                     <div class="card-body">
                         <a class="card-link btn btn-info" href="/campgrounds/<%=campground._id%>/edit">Edit</a>
-                        <button type="button" class="btn btn-danger mx-2" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-                           Delete
-                          </button>
-                          <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                        <button type="button" class="btn btn-danger mx-2" data-bs-toggle="modal"
+                            data-bs-target="#staticBackdrop">
+                            Delete
+                        </button>
+                        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
+                            tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered">
-                              <div class="modal-content">
-                                <div class="modal-header">
-                                  <h1 class="modal-title fs-5" id="staticBackdropLabel">Confirm deletion</h1>
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="staticBackdropLabel">Confirm deletion</h1>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <h5>Deleting this campground will permanently remove it from your account.
+                                            Proceed with deletion?</h5>
+                                        <button type="button" class="btn btn-secondary"
+                                            data-bs-dismiss="modal">No</button>
+                                        <form class="d-inline" action="/campgrounds/<%=campground._id%>?_method=DELETE"
+                                            method="POST">
+                                            <button class="btn btn-danger mx-2">Yes proceed</button>
+                                        </form>
+                                    </div>
                                 </div>
-                                <div class="modal-footer">
-                                    <h5>Deleting this campground will permanently remove it from your account. Proceed with deletion?</h5>
-                                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
-                                  <form class="d-inline" action="/campgrounds/<%=campground._id%>?_method=DELETE" method="POST">
-                                    <button class="btn btn-danger mx-2">Yes proceed</button>
-                                </form>
-                                </div>
-                              </div>
                             </div>
-                          </div>
+                        </div>
                     </div>
                     <% } %>
                         <div class="card-footer text-muted">
@@ -94,9 +103,13 @@
                 <ul class="list-group mb-3 mt-3">
                     <% for(let place of campground.recommendedPlaces) {%>
                         <li class="list-group-item p-3">
-                            <%= place %> <a href="https://www.google.com/search?q= <%= campground.title + ' ' +place %>" style="text-decoration: none; color: #212121"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search ms-2" viewBox="0 0 16 16">
-                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
-                              </svg></a>
+                            <%= place %> <a href="https://www.google.com/search?q= <%= campground.title + ' ' +place %>"
+                                    style="text-decoration: none; color: #212121"><svg
+                                        xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                        class="bi bi-search ms-2" viewBox="0 0 16 16">
+                                        <path
+                                            d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
+                                    </svg></a>
                         </li>
                         <% } %>
                 </ul>
@@ -112,7 +125,7 @@
                                     <div class="mb-0">
                                         <fieldset class="starability-basic">
                                             <input type="radio" id="no-rate" class="input-no-rate" name="review[rating]"
-                                            value="1" checked aria-label="No rating." />
+                                                value="1" checked aria-label="No rating." />
                                             <input type="radio" id="first-rate1" name="review[rating]" value="1" />
                                             <label for="first-rate1" title="Terrible">1 star</label>
                                             <input type="radio" id="first-rate2" name="review[rating]" value="2" />
@@ -149,7 +162,7 @@
 
                                             <h4>
                                                 <span>
-                                                    <img src="<%= review.author.profile %>"
+                                                    <img src="<%= review.author.profile.url %>"
                                                         style="border-radius: 100%; object-fit: cover; width: 50px; height: 50px"
                                                         class="img-thumbnail" alt="">
                                                 </span>
@@ -191,4 +204,3 @@
         const campground = <%- JSON.stringify(campground) %>
     </script>
     <script src="/javascripts/mapconfig3.js"></script>
-    
