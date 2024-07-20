@@ -20,7 +20,7 @@ router.route('/')
 
 router.route('/new')
     .get(isLoggedIn, campgrounds.renderNewForm)
-    .post(isLoggedIn,upload.array('image'), validateCampground, campgrounds.createNewCampground); ////
+    .post(isLoggedIn,upload.array('image'), campgrounds.createNewCampground); //// validateCampground,
 
 
 router.post('/:id/bookmarks', isLoggedIn, campgrounds.addToBookmarks);

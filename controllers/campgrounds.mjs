@@ -30,16 +30,18 @@ const createNewCampground = catchAsync(async (req, res) => {
     try {
         const campground = new Campground(req.body.campground);
         const geoData = await maptilerClient.geocoding.forward(req.body.campground.location, { limit: 1 });
-        console.log(geoData)
+        console.log({geoData: geoData})
         campground.geometry.type = geoData.features[0].geometry.type;
-        campground.geometry.center = geoData.features[0].center
+        campground.geometry.coordinates = geoData.features[0].center
         campground.images = req.files.map(f => ({ url: f.path, filename: f.filename }))
         campground.author = req.user._id;
         campground.recommendedPlaces = [...req.body.places];
         campground.postDate = new Date();
-        await campground.save();
-        req.flash('success', 'Sucessfully added a campground!')
-        res.redirect(`/campgrounds/${campground.id}`);
+        res.send(campground)
+        // await campground.save();
+        // req.flash('success', 'Sucessfully added a campground!')
+        // res.redirect(`/campgrounds/${campground.id}`);
+        console.log(campground)
     } catch (e) {
         console.log(e)
     }
@@ -93,7 +95,7 @@ const editCampground = catchAsync(async (req, res) => {
         campground.recommendedPlaces = [...req.body.places];
         const geoData = await maptilerClient.geocoding.forward(req.body.campground.location, { limit: 1 });
         campground.geometry.type = geoData.features[0].geometry.type;
-        campground.geometry.center = geoData.features[0].center
+        campground.geometry.coordinates = geoData.features[0].center
         await campground.save();
         req.flash('success', 'Sucessfully updated the campground!')
         res.redirect(`/campgrounds/${campground.id}`)
