@@ -4,11 +4,19 @@ This is my first full stack project. YelpCamp is a camping-based project where u
 
 ## Table of Contents
 - [General Info](#general-info)
+- [Features](#features)
 - [Technologies](#technologies)
 - [To Visit This Website](#to-visit-this-website)
 
 ## General Info
 YelpCamp is a model project from Colt Steele's Udemy Course called Full Stack Web Development. It is a website where users can create and review campgrounds. To review or create a campground, you must have an account.
+
+## Features
+- User authentication and authorization
+- Create, read, update, and delete campgrounds
+- Add and remove campground reviews
+- Map integration for campground locations
+- Responsive design
 
 ## Technologies
 - JavaScript
@@ -17,9 +25,9 @@ YelpCamp is a model project from Colt Steele's Udemy Course called Full Stack We
 - MongoDB
 - Passport.js for authentication
 - EJS for templating
+- Bootstrap for styling
+- Helmet.js for security
+- MapTiler for geocoding and map integration
 
 ## To Visit This Website
-The project is currently in progress. Once it's completed, I will update this section with the web app link to make it more professional.
-
-
-   
+You can visit the live website [here](https://yelpcamp-z482.onrender.com).
