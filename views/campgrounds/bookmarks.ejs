@@ -5,14 +5,14 @@
 <% for (let campground of bookmarks) { %>
     <div class="card mb-3">
       <div class="row g-0">
-        <div class="col-md-4">
+        <div class="col-md-4 d-flex align-items-center">
           <img src="<%= campground.images[0].url %>" class="img-fluid rounded-start" alt="...">
         </div>
         <div class="col-md-8 d-flex">
           <div class="card-body d-flex flex-column p-0">
             <div class="p-2">
               <h5 class="card-title">   <a href="https://www.google.com/search?q=<%= campground.title %>" style="text-decoration: none;"><%= campground.title %></a></h5>
-            <p class="card-text">   <%= campground.description %></p>
+            <p class="card-text p-3">   <%= campground.description %></p>
             </div>
             <div class="card-footer mt-auto d-flex align-items-center">
               <a class="btn btn-primary " href="campgrounds/<%= campground.id %>">View Location</a>
